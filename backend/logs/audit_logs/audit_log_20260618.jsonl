@@ -1,0 +1,12 @@
+{"timestamp": "2026-06-18T09:22:32.658340", "pipeline_stage": "PIPELINE_EXECUTION", "status": "FAILED", "details": {"error_message": "detect_business_opportunities() missing 3 required positional arguments: 'trend_analysis', 'risk_scores', and 'confidence_scores'"}, "error_message": null}
+{"timestamp": "2026-06-18T09:55:00.155562", "pipeline_stage": "PIPELINE_EXECUTION", "status": "FAILED", "details": {"error_message": "generate_pdf_report() missing 3 required positional arguments: 'analysis', 'charts', and 'conclusions'"}, "error_message": null}
+{"timestamp": "2026-06-18T11:01:02.042297", "pipeline_stage": "PIPELINE_EXECUTION", "status": "FAILED", "details": {"error_message": "name 'ai_reasoning' is not defined"}, "error_message": null}
+{"timestamp": "2026-06-18T11:22:03.648851", "pipeline_stage": "PIPELINE_EXECUTION", "status": "FAILED", "details": {"error_message": "return_frontend_results() got an unexpected keyword argument 'recommendations'"}, "error_message": null}
+{"timestamp": "2026-06-18T11:46:42.245489", "pipeline_stage": "PIPELINE_EXECUTION", "status": "FAILED", "details": {"error_message": "return_frontend_results() got an unexpected keyword argument 'opportunities'"}, "error_message": null}
+{"timestamp": "2026-06-18T12:17:45.267007", "pipeline_stage": "PIPELINE_EXECUTION", "status": "FAILED", "details": {"error_message": "name 'recommendations' is not defined"}, "error_message": null}
+{"timestamp": "2026-06-18T12:30:22.681870", "pipeline_stage": "MODEL_TRAINING", "status": "SUCCESS", "details": {"models_trained": 2, "pipeline_version": "44.0.0"}, "error_message": null}
+{"timestamp": "2026-06-18T12:30:22.728741", "pipeline_stage": "PIPELINE_EXECUTION", "status": "FAILED", "details": {"error_message": "name 'pdf_report' is not defined"}, "error_message": null}
+{"timestamp": "2026-06-18T12:45:54.025718", "pipeline_stage": "MODEL_TRAINING", "status": "SUCCESS", "details": {"models_trained": 2, "pipeline_version": "44.0.0"}, "error_message": null}
+{"timestamp": "2026-06-18T13:44:12.634617", "pipeline_stage": "MODEL_TRAINING", "status": "SUCCESS", "details": {"models_trained": 2, "pipeline_version": "44.0.0"}, "error_message": null}
+{"timestamp": "2026-06-18T19:59:21.291953", "pipeline_stage": "MODEL_TRAINING", "status": "SUCCESS", "details": {"models_trained": 2, "pipeline_version": "44.0.0"}, "error_message": null}
+{"timestamp": "2026-06-18T20:36:43.364935", "pipeline_stage": "MODEL_TRAINING", "status": "SUCCESS", "details": {"models_trained": 2, "pipeline_version": "44.0.0"}, "error_message": null}

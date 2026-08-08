@@ -1,0 +1,3 @@
+{"timestamp": "2026-05-25T06:46:18.111178", "pipeline_stage": "PIPELINE_EXECUTION", "status": "FAILED", "details": {"error_message": "'dict' object has no attribute 'drop'"}, "error_message": null}
+{"timestamp": "2026-05-25T07:12:27.163040", "pipeline_stage": "PIPELINE_EXECUTION", "status": "FAILED", "details": {"error_message": "train_prediction_models() takes 1 positional argument but 2 were given"}, "error_message": null}
+{"timestamp": "2026-05-25T13:27:45.486701", "pipeline_stage": "PIPELINE_EXECUTION", "status": "FAILED", "details": {"error_message": "Training dataframe is empty"}, "error_message": null}

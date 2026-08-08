@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Executive Intelligence & Strategic Health Report - {{ company_name }}</title>
+    <style>
+        /* =========================================================
+           PRINT & PAGINATION ENGINE RULES (XHTML2PDF SAFE)
+           ========================================================= */
+        @page {
+            size: A4 portrait;
+            margin: 1.2cm;
+        }
+
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            background-color: #020617;
+            color: #f8fafc;
+            margin: 0;
+            padding: 0;
+            font-size: 9pt;
+            line-height: 1.4;
+        }
+
+        /* Typography & Structure */
+        h1, h2, h3, h4 {
+            color: #ffffff;
+            margin: 0 0 8px 0;
+            padding: 0;
+            font-weight: bold;
+        }
+
+        .highlight-gold {
+            color: #facc15;
+        }
+
+        .page-break {
+            page-break-before: always;
+        }
+
+        .avoid-break {
+            page-break-inside: avoid;
+        }
+
+        /* Header Branding Banner */
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 14px;
+            border-bottom: 2px solid #334155;
+            padding-bottom: 10px;
+        }
+
+        .header-title {
+            font-size: 16pt;
+            font-weight: bold;
+            color: #ffffff;
+            line-height: 1.2;
+        }
+
+        .header-subtitle {
+            font-size: 8.5pt;
+            color: #94a3b8;
+            margin-top: 3px;
+        }
+
+        .header-logo {
+            text-align: right;
+            vertical-align: middle;
+        }
+
+        .header-logo img {
+            max-height: 42px;
+            width: auto;
+        }
+
+        /* Metadata Grid Box */
+        .meta-box {
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            padding: 8px 12px;
+            margin-bottom: 16px;
+        }
+
+        .meta-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .meta-label {
+            font-size: 7pt;
+            text-transform: uppercase;
+            color: #94a3b8;
+            font-weight: bold;
+        }
+
+        .meta-value {
+            font-size: 9pt;
+            font-weight: bold;
+            color: #facc15;
+        }
+
+        /* Section Titles */
+        .section-title {
+            font-size: 11pt;
+            text-transform: uppercase;
+            color: #38bdf8;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 4px;
+            margin-top: 18px;
+            margin-bottom: 10px;
+        }
+
+        /* Health Status Banner */
+        .health-container {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 16px;
+        }
+
+        .health-card {
+            background-color: #0f172a;
+            border: 1px solid #facc15;
+            padding: 12px;
+            text-align: center;
+            width: 28%;
+        }
+
+        .health-score {
+            font-size: 26pt;
+            font-weight: bold;
+            color: #facc15;
+            line-height: 1;
+        }
+
+        .health-status-badge {
+            display: inline-block;
+            margin-top: 6px;
+            padding: 2px 8px;
+            font-size: 7.5pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            background-color: #1e293b;
+            color: #facc15;
+            border: 1px solid #eab308;
+        }
+
+        .narrative-card {
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            padding: 12px 14px;
+            width: 68%;
+            vertical-align: top;
+            font-size: 9pt;
+            color: #f8fafc;
+            line-height: 1.5;
+        }
+
+        /* Dashboard Metrics Grid (4x4 Tables) */
+        .metrics-grid {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 6px;
+            margin-bottom: 12px;
+        }
+
+        .metric-cell {
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            padding: 8px;
+            text-align: center;
+            width: 25%;
+        }
+
+        .metric-title {
+            font-size: 7pt;
+            text-transform: uppercase;
+            color: #94a3b8;
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+
+        .metric-value {
+            font-size: 11.5pt;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        /* Time-Phased Action Plan Layout */
+        .horizon-box {
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            border-left: 4px solid #38bdf8;
+            padding: 10px 12px;
+            margin-bottom: 10px;
+        }
+
+        .horizon-title {
+            font-size: 9.5pt;
+            font-weight: bold;
+            color: #38bdf8;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .action-list {
+            margin: 0;
+            padding-left: 18px;
+            font-size: 8.5pt;
+            color: #cbd5e1;
+        }
+
+        .action-list li {
+            margin-bottom: 4px;
+        }
+
+        /* Risk Severity Badges */
+        .badge-critical { background-color: #7f1d1d; color: #fca5a5; border: 1px solid #ef4444; }
+        .badge-high { background-color: #854d0e; color: #fde047; border: 1px solid #eab308; }
+        .badge-medium { background-color: #1e3a8a; color: #93c5fd; border: 1px solid #3b82f6; }
+        .badge-low { background-color: #14532d; color: #86efac; border: 1px solid #22c55e; }
+
+        .badge {
+            display: inline-block;
+            padding: 1px 6px;
+            font-size: 6.5pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 2px;
+            margin-right: 4px;
+        }
+
+        /* Anomaly & Risk Box */
+        .risk-item {
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            padding: 8px 12px;
+            margin-bottom: 6px;
+            font-size: 8.5pt;
+            color: #cbd5e1;
+        }
+
+        .opp-item {
+            background-color: #064e3b;
+            border: 1px solid #10b981;
+            padding: 8px 12px;
+            margin-bottom: 6px;
+            font-size: 8.5pt;
+            color: #a7f3d0;
+        }
+
+        /* Recommendation Box */
+        .rec-box {
+            background-color: #0f172a;
+            border-left: 4px solid #facc15;
+            border-top: 1px solid #334155;
+            border-right: 1px solid #334155;
+            border-bottom: 1px solid #334155;
+            padding: 8px 12px;
+            margin-bottom: 8px;
+        }
+
+        .rec-header {
+            font-size: 9pt;
+            font-weight: bold;
+            color: #facc15;
+            margin-bottom: 3px;
+        }
+
+        .rec-action {
+            color: #f8fafc;
+            font-size: 8.5pt;
+            margin-bottom: 3px;
+        }
+
+        .rec-impact {
+            color: #38bdf8;
+            font-size: 8pt;
+            font-weight: bold;
+        }
+
+        /* Embedded Chart Grid */
+        .chart-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8px;
+        }
+
+        .chart-cell {
+            width: 50%;
+            padding: 4px;
+            text-align: center;
+        }
+
+        .chart-img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #334155;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- =========================================================
+         HEADER BRANDING & METADATA
+         ========================================================= -->
+    <table class="header-table">
+        <tr>
+            <td>
+                <div class="header-title">Executive <span class="highlight-gold">Intelligence</span> Report</div>
+                <div class="header-subtitle">Automated Strategic Health & Analytical Diagnostics — {{ company_name }}</div>
+            </td>
+            <td class="header-logo">
+                {% if logo_path %}
+                    <img src="{{ logo_path }}" alt="Company Logo">
+                {% else %}
+                    <div style="font-size: 13pt; font-weight: bold; color: #facc15;">MADUK BI</div>
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+
+    <div class="meta-box">
+        <table class="meta-table">
+            <tr>
+                <td>
+                    <div class="meta-label">Target Entity</div>
+                    <div class="meta-value">{{ company_name }}</div>
+                </td>
+                <td>
+                    <div class="meta-label">Report Date</div>
+                    <div class="meta-value">{{ generation_date }}</div>
+                </td>
+                <td>
+                    <div class="meta-label">Data Quality Score</div>
+                    <div class="meta-value">
+                        {% set dq_score = profile.data_quality_score if profile is defined and profile.data_quality_score is defined else (profile.get('data_quality_score', 100.0) if profile is mapping else 100.0) %}
+                        {{ "%.1f"|format(dq_score) }}/100
+                    </div>
+                </td>
+                <td>
+                    <div class="meta-label">Timestamp</div>
+                    <div class="meta-value">{{ generation_timestamp }}</div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- =========================================================
+         BUSINESS HEALTH SCORE & EXECUTIVE NARRATIVE
+         ========================================================= -->
+    <div class="section-title">🏥 Strategic Business Health Diagnostic</div>
+    
+    <table class="health-container">
+        <tr>
+            <td class="health-card">
+                <div style="font-size: 7.5pt; font-weight: bold; color: #94a3b8; text-transform: uppercase;">Overall Score</div>
+                <div class="health-score">
+                    {% set score = health.health_score if health is defined and health.health_score is defined else (health.get('health_score', 0) if health is mapping else 0) %}
+                    {{ score }}
+                </div>
+                <div>
+                    <span class="health-status-badge">
+                        {% set status_val = health.status if health is defined and health.status is defined else (health.get('status', 'Healthy') if health is mapping else 'Healthy') %}
+                        {{ status_val }}
+                    </span>
+                </div>
+            </td>
+            <td style="width: 3%;"></td>
+            <td class="narrative-card">
+                <div style="font-weight: bold; color: #38bdf8; margin-bottom: 4px; text-transform: uppercase; font-size: 8pt;">
+                    📌 Executive Summary Narrative
+                </div>
+                <div>{{ summary_narrative or 'Executive narrative evaluation complete. Diagnostics indicate stable business ops with specific strategic optimization levers.' }}</div>
+            </td>
+        </tr>
+    </table>
+
+    <!-- =========================================================
+         16 CORE EXECUTIVE DASHBOARD METRICS
+         ========================================================= -->
+    <div class="section-title">📊 Executive Performance Indicators</div>
+
+    {% macro get_metric(field, default_val=0.0) %}
+        {%- if dashboard is mapping -%}
+            {{ dashboard.get(field, default_val) }}
+        {%- elif dashboard is defined and attribute(dashboard, field) is defined -%}
+            {{ attribute(dashboard, field) }}
+        {%- else -%}
+            {{ default_val }}
+        {%- endif -%}
+    {% endmacro %}
+
+    <!-- Row 1 -->
+    <table class="metrics-grid">
+        <tr>
+            <td class="metric-cell">
+                <div class="metric-title">Revenue Growth</div>
+                <div class="metric-value">{{ get_metric('revenue_growth', 0.0) }}%</div>
+            </td>
+            <td class="metric-cell">
+                <div class="metric-title">Net Profit Margin</div>
+                <div class="metric-value">{{ get_metric('net_profit_margin', 0.0) }}%</div>
+            </td>
+            <td class="metric-cell">
+                <div class="metric-title">Gross Margin</div>
+                <div class="metric-value">{{ get_metric('gross_margin', 0.0) }}%</div>
+            </td>
+            <td class="metric-cell">
+                <div class="metric-title">EBITDA Margin</div>
+                <div class="metric-value">{{ get_metric('ebitda_margin', 0.0) }}%</div>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Row 2 -->
+    <table class="metrics-grid">
+        <tr>
+            <td class="metric-cell">
+                <div class="metric-title">Operating Margin</div>
+                <div class="metric-value">{{ get_metric('operating_margin', 0.0) }}%</div>
+            </td>
+            <td class="metric-cell">
+                <div class="metric-title">Customer Growth</div>
+                <div class="metric-value">{{ get_metric('customer_growth', 0.0) }}%</div>
+            </td>
+            <td class="metric-cell">
+                <div class="metric-title">Churn Rate</div>
+                <div class="metric-value">{{ get_metric('churn_rate', 0.0) }}%</div>
+            </td>
+            <td class="metric-cell">
+                <div class="metric-title">Customer Life Value</div>
+                <div class="metric-value">${{ "%.2f"|format(get_metric('clv', 0.0)|float) }}</div>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Row 3 -->
+    <table class="metrics-grid">
+        <tr>
+            <td class="metric-cell">
+                <div class="metric-title">Acquisition Cost (CAC)</div>
+                <div class="metric-value">${{ "%.2f"|format(get_metric('cac', 0.0)|float) }}</div>
+            </td>
+            <td class="metric-cell">
+                <div class="metric-title">Marketing ROI</div>
+                <div class="metric-value">{{ get_metric('marketing_roi', 0.0) }}x</div>
+            </td>
+            <td class="metric-cell">
+                <div class="metric-title">Cash Balance</div>
+                <div class="metric-value">${{ "%.2f"|format(get_metric('cash_balance', 0.0)|float) }}</div>
+            </td>
+            <td class="metric-cell">
+                <div class="metric-title">Current Ratio</div>
+                <div class="metric-value">{{ get_metric('current_ratio', 0.0) }}</div>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Row 4 -->
+    <table class="metrics-grid">
+        <tr>
+            <td class="metric-cell">
+                <div class="metric-title">Debt Ratio</div>
+                <div class="metric-value">{{ get_metric('debt_ratio', 0.0) }}</div>
+            </td>
+            <td class="metric-cell">
+                <div class="metric-title">Inventory Turnover</div>
+                <div class="metric-value">{{ get_metric('inventory_turnover', 0.0) }}</div>
+            </td>
+            <td class="metric-cell">
+                <div class="metric-title">Return on Investment</div>
+                <div class="metric-value">{{ get_metric('roi', 0.0) }}%</div>
+            </td>
+            <td class="metric-cell">
+                <div class="metric-title">Data Quality Index</div>
+                <div class="metric-value">
+                    {% set dq_score = profile.data_quality_score if profile is defined and profile.data_quality_score is defined else (profile.get('data_quality_score', 100.0) if profile is mapping else 100.0) %}
+                    {{ "%.1f"|format(dq_score) }}
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <!-- PAGE BREAK FOR ACTION PLAN & RISKS -->
+    <div class="page-break"></div>
+
+    <!-- =========================================================
+         TIME-PHASED PRIORITY ACTION PLAN
+         ========================================================= -->
+    <div class="section-title">🚀 Time-Phased Priority Action Plan</div>
+
+    {% if action_plan %}
+        {% set imm_actions = action_plan.get('immediate_30_days', []) if action_plan is mapping else getattr(action_plan, 'immediate_30_days', []) %}
+        {% set med_actions = action_plan.get('medium_term_90_days', []) if action_plan is mapping else getattr(action_plan, 'medium_term_90_days', []) %}
+        {% set long_actions = action_plan.get('long_term_12_months', []) if action_plan is mapping else getattr(action_plan, 'long_term_12_months', []) %}
+
+        <!-- Immediate 30-Day Horizon -->
+        <div class="horizon-box avoid-break" style="border-left-color: #ef4444;">
+            <div class="horizon-title" style="color: #fca5a5;">⚡ Immediate Priorities (30 Days)</div>
+            <ul class="action-list">
+                {% for item in imm_actions %}
+                    <li>{{ item }}</li>
+                {% else %}
+                    <li>Maintain daily monitoring of core liquid cash reserves and operational cash flow.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Medium-Term 90-Day Horizon -->
+        <div class="horizon-box avoid-break" style="border-left-color: #facc15;">
+            <div class="horizon-title" style="color: #fde047;">🎯 Medium-Term Objectives (90 Days)</div>
+            <ul class="action-list">
+                {% for item in med_actions %}
+                    <li>{{ item }}</li>
+                {% else %}
+                    <li>Conduct quarterly vendor contract reviews and cost optimization audits.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Long-Term 12-Month Horizon -->
+        <div class="horizon-box avoid-break" style="border-left-color: #10b981;">
+            <div class="horizon-title" style="color: #6ee7b7;">🏔️ Strategic Initiatives (12 Months)</div>
+            <ul class="action-list">
+                {% for item in long_actions %}
+                    <li>{{ item }}</li>
+                {% else %}
+                    <li>Evaluate market expansion opportunities and new high-margin product verticals.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <!-- =========================================================
+         RISK ASSESSMENT & GROWTH OPPORTUNITIES
+         ========================================================= -->
+    {% if risk_assessment and risk_assessment.anomalies %}
+        <div class="section-title" style="color: #f87171;">⚠️ Risk Assessment & Anomaly Alerts</div>
+        {% for anomaly in risk_assessment.anomalies %}
+            <div class="risk-item avoid-break">
+                {% set severity = anomaly.severity if anomaly is mapping else getattr(anomaly, 'severity', 'Medium') %}
+                {% set metric = anomaly.metric if anomaly is mapping else getattr(anomaly, 'metric', 'Risk') %}
+                {% set details = anomaly.details if anomaly is mapping else getattr(anomaly, 'details', str(anomaly)) %}
+                <span class="badge badge-{{ severity|lower }}">{{ severity }}</span>
+                <strong>{{ metric }}:</strong> {{ details }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if risk_assessment and risk_assessment.opportunities %}
+        <div class="section-title" style="color: #34d399;">🌟 Strategic Growth Opportunities</div>
+        {% for opp in risk_assessment.opportunities %}
+            <div class="opp-item avoid-break">
+                🌱 <strong>Opportunity:</strong> {{ opp }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- =========================================================
+         GROUNDED AI STRATEGIC RECOMMENDATIONS
+         ========================================================= -->
+    {% if recommendations %}
+        <div class="section-title">💡 Rule-Grounded Strategic Recommendations</div>
+        {% for rec in recommendations %}
+            <div class="rec-box avoid-break">
+                <div class="rec-header">{{ rec.get('title', 'Strategic Action') if rec is mapping else rec.title|default('Strategic Action') }}</div>
+                <div class="rec-action">{{ rec.get('action', rec) if rec is mapping else rec.action|default(rec) }}</div>
+                {% set impact = rec.get('impact', '') if rec is mapping else rec.impact|default('') %}
+                {% if impact %}
+                <div class="rec-impact">Expected Impact: {{ impact }}</div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+</body>
+</html>

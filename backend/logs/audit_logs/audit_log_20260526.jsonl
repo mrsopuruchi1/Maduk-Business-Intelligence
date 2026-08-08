@@ -1,0 +1,2 @@
+{"timestamp": "2026-05-26T12:12:39.081065", "pipeline_stage": "PIPELINE_EXECUTION", "status": "FAILED", "details": {"error_message": "Training dataframe is empty"}, "error_message": null}
+{"timestamp": "2026-05-26T13:53:46.006072", "pipeline_stage": "PIPELINE_EXECUTION", "status": "FAILED", "details": {"error_message": "module 'pandas' has no attribute 'Dataframe'"}, "error_message": null}

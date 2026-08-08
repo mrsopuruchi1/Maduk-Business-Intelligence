@@ -1,0 +1,193 @@
+{
+    "success": true,
+    "drift_detected": false,
+    "drift_percentage": 0.0,
+    "total_columns_checked": 16,
+    "drifted_columns": 0,
+    "feature_drift_results": [
+        {
+            "column": "monthly_revenue",
+            "drift_detected": "False",
+            "ks_statistic": 0.0,
+            "ks_pvalue": 1.0,
+            "wasserstein_distance": 0.0,
+            "reference_mean": 52329.5238,
+            "current_mean": 52329.5238,
+            "reference_std": 34175.7863,
+            "current_std": 34175.7863
+        },
+        {
+            "column": "sales",
+            "drift_detected": "False",
+            "ks_statistic": 0.0,
+            "ks_pvalue": 1.0,
+            "wasserstein_distance": 0.0,
+            "reference_mean": 818.3143,
+            "current_mean": 818.3143,
+            "reference_std": 625.685,
+            "current_std": 625.685
+        },
+        {
+            "column": "profit",
+            "drift_detected": "False",
+            "ks_statistic": 0.0,
+            "ks_pvalue": 1.0,
+            "wasserstein_distance": 0.0,
+            "reference_mean": 22416.0,
+            "current_mean": 22416.0,
+            "reference_std": 15683.9145,
+            "current_std": 15683.9145
+        },
+        {
+            "column": "marketing_spend",
+            "drift_detected": "False",
+            "ks_statistic": 0.0,
+            "ks_pvalue": 1.0,
+            "wasserstein_distance": 0.0,
+            "reference_mean": 8858.0952,
+            "current_mean": 8858.0952,
+            "reference_std": 5836.4686,
+            "current_std": 5836.4686
+        },
+        {
+            "column": "lead_count",
+            "drift_detected": "False",
+            "ks_statistic": 0.0,
+            "ks_pvalue": 1.0,
+            "wasserstein_distance": 0.0,
+            "reference_mean": 1046.9333,
+            "current_mean": 1046.9333,
+            "reference_std": 648.7602,
+            "current_std": 648.7602
+        },
+        {
+            "column": "customer_count",
+            "drift_detected": "False",
+            "ks_statistic": 0.0,
+            "ks_pvalue": 1.0,
+            "wasserstein_distance": 0.0,
+            "reference_mean": 680.2952,
+            "current_mean": 680.2952,
+            "reference_std": 526.3184,
+            "current_std": 526.3184
+        },
+        {
+            "column": "customer_retention_rate",
+            "drift_detected": "False",
+            "ks_statistic": 0.0,
+            "ks_pvalue": 1.0,
+            "wasserstein_distance": 0.0,
+            "reference_mean": 0.9793,
+            "current_mean": 0.9793,
+            "reference_std": 0.0331,
+            "current_std": 0.0331
+        },
+        {
+            "column": "website_visits",
+            "drift_detected": "False",
+            "ks_statistic": 0.0,
+            "ks_pvalue": 1.0,
+            "wasserstein_distance": 0.0,
+            "reference_mean": 18630.381,
+            "current_mean": 18630.381,
+            "reference_std": 11831.8935,
+            "current_std": 11831.8935
+        },
+        {
+            "column": "conversion_rate",
+            "drift_detected": "False",
+            "ks_statistic": 0.0,
+            "ks_pvalue": 1.0,
+            "wasserstein_distance": 0.0,
+            "reference_mean": 0.093,
+            "current_mean": 0.093,
+            "reference_std": 0.0303,
+            "current_std": 0.0303
+        },
+        {
+            "column": "mrr",
+            "drift_detected": "False",
+            "ks_statistic": 0.0,
+            "ks_pvalue": 1.0,
+            "wasserstein_distance": 0.0,
+            "reference_mean": 5079.619,
+            "current_mean": 5079.619,
+            "reference_std": 3689.3253,
+            "current_std": 3689.3253
+        },
+        {
+            "column": "arr",
+            "drift_detected": "False",
+            "ks_statistic": 0.0,
+            "ks_pvalue": 1.0,
+            "wasserstein_distance": 0.0,
+            "reference_mean": 60955.4286,
+            "current_mean": 60955.4286,
+            "reference_std": 44271.903,
+            "current_std": 44271.903
+        },
+        {
+            "column": "employee_count",
+            "drift_detected": "False",
+            "ks_statistic": 0.0,
+            "ks_pvalue": 1.0,
+            "wasserstein_distance": 0.0,
+            "reference_mean": 28.7048,
+            "current_mean": 28.7048,
+            "reference_std": 10.0493,
+            "current_std": 10.0493
+        },
+        {
+            "column": "ad_spend",
+            "drift_detected": "False",
+            "ks_statistic": 0.0,
+            "ks_pvalue": 1.0,
+            "wasserstein_distance": 0.0,
+            "reference_mean": 3843.8095,
+            "current_mean": 3843.8095,
+            "reference_std": 2628.9434,
+            "current_std": 2628.9434
+        },
+        {
+            "column": "email_campaigns",
+            "drift_detected": "False",
+            "ks_statistic": 0.0,
+            "ks_pvalue": 1.0,
+            "wasserstein_distance": 0.0,
+            "reference_mean": 17.0571,
+            "current_mean": 17.0571,
+            "reference_std": 8.8046,
+            "current_std": 8.8046
+        },
+        {
+            "column": "social_media_spend",
+            "drift_detected": "False",
+            "ks_statistic": 0.0,
+            "ks_pvalue": 1.0,
+            "wasserstein_distance": 0.0,
+            "reference_mean": 1900.9524,
+            "current_mean": 1900.9524,
+            "reference_std": 604.6085,
+            "current_std": 604.6085
+        },
+        {
+            "column": "client_satisfaction",
+            "drift_detected": "False",
+            "ks_statistic": 0.0,
+            "ks_pvalue": 1.0,
+            "wasserstein_distance": 0.0,
+            "reference_mean": 9.7943,
+            "current_mean": 9.7943,
+            "reference_std": 0.3585,
+            "current_std": 0.3585
+        }
+    ],
+    "target_drift": null,
+    "seasonality_shift": {
+        "shift_detected": false,
+        "message": "Seasonality engine active."
+    },
+    "detector_name": "Maduk Enterprise Drift Detector",
+    "detector_version": "1.0.0",
+    "timestamp": "2026-05-24T07:11:39.907888"
+}

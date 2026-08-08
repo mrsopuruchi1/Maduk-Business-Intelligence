@@ -1,0 +1,624 @@
+{
+    "confidence_records": [
+        {
+            "success": true,
+            "model_name": "ensemble_model",
+            "confidence_score": 0.0,
+            "trust_level": "Very Low",
+            "uncertainty_score": NaN,
+            "ensemble_agreement": 0.75,
+            "performance_score": 0.0,
+            "confidence_interval": {
+                "lower_bound": NaN,
+                "upper_bound": NaN
+            },
+            "prediction_statistics": {
+                "mean_prediction": NaN,
+                "prediction_std": NaN,
+                "prediction_variance": NaN
+            },
+            "executive_interpretation": "Prediction uncertainty is high. Strategic review required.",
+            "generated_at": "2026-06-03 14:47:11.866212"
+        },
+        {
+            "success": true,
+            "model_name": "ensemble_model",
+            "confidence_score": 0.0,
+            "trust_level": "Very Low",
+            "uncertainty_score": NaN,
+            "ensemble_agreement": 0.75,
+            "performance_score": 0.0,
+            "confidence_interval": {
+                "lower_bound": NaN,
+                "upper_bound": NaN
+            },
+            "prediction_statistics": {
+                "mean_prediction": NaN,
+                "prediction_std": NaN,
+                "prediction_variance": NaN
+            },
+            "executive_interpretation": "Prediction uncertainty is high. Strategic review required.",
+            "generated_at": "2026-06-05 13:23:52.009296"
+        },
+        {
+            "success": true,
+            "model_name": "ensemble_model",
+            "confidence_score": 0.0,
+            "trust_level": "Very Low",
+            "uncertainty_score": NaN,
+            "ensemble_agreement": 0.75,
+            "performance_score": 0.0,
+            "confidence_interval": {
+                "lower_bound": NaN,
+                "upper_bound": NaN
+            },
+            "prediction_statistics": {
+                "mean_prediction": NaN,
+                "prediction_std": NaN,
+                "prediction_variance": NaN
+            },
+            "executive_interpretation": "Prediction uncertainty is high. Strategic review required.",
+            "generated_at": "2026-06-05 14:59:15.191407"
+        },
+        {
+            "success": true,
+            "model_name": "ensemble_model",
+            "confidence_score": 0.0,
+            "trust_level": "Very Low",
+            "uncertainty_score": NaN,
+            "ensemble_agreement": 0.75,
+            "performance_score": 0.0,
+            "confidence_interval": {
+                "lower_bound": NaN,
+                "upper_bound": NaN
+            },
+            "prediction_statistics": {
+                "mean_prediction": NaN,
+                "prediction_std": NaN,
+                "prediction_variance": NaN
+            },
+            "executive_interpretation": "Prediction uncertainty is high. Strategic review required.",
+            "generated_at": "2026-06-08 06:44:33.238777"
+        },
+        {
+            "success": true,
+            "model_name": "ensemble_model",
+            "confidence_score": 0.0,
+            "trust_level": "Very Low",
+            "uncertainty_score": NaN,
+            "ensemble_agreement": 0.75,
+            "performance_score": 0.0,
+            "confidence_interval": {
+                "lower_bound": NaN,
+                "upper_bound": NaN
+            },
+            "prediction_statistics": {
+                "mean_prediction": NaN,
+                "prediction_std": NaN,
+                "prediction_variance": NaN
+            },
+            "executive_interpretation": "Prediction uncertainty is high. Strategic review required.",
+            "generated_at": "2026-06-08 15:27:08.028532"
+        },
+        {
+            "success": true,
+            "model_name": "ensemble_model",
+            "confidence_score": 0.0,
+            "trust_level": "Very Low",
+            "uncertainty_score": NaN,
+            "ensemble_agreement": 0.75,
+            "performance_score": 0.0,
+            "confidence_interval": {
+                "lower_bound": NaN,
+                "upper_bound": NaN
+            },
+            "prediction_statistics": {
+                "mean_prediction": NaN,
+                "prediction_std": NaN,
+                "prediction_variance": NaN
+            },
+            "executive_interpretation": "Prediction uncertainty is high. Strategic review required.",
+            "generated_at": "2026-06-09 11:57:10.990136"
+        },
+        {
+            "success": true,
+            "model_name": "ensemble_model",
+            "confidence_score": 0.0,
+            "trust_level": "Very Low",
+            "uncertainty_score": NaN,
+            "ensemble_agreement": 0.75,
+            "performance_score": 0.0,
+            "confidence_interval": {
+                "lower_bound": NaN,
+                "upper_bound": NaN
+            },
+            "prediction_statistics": {
+                "mean_prediction": NaN,
+                "prediction_std": NaN,
+                "prediction_variance": NaN
+            },
+            "executive_interpretation": "Prediction uncertainty is high. Strategic review required.",
+            "generated_at": "2026-06-09 13:29:31.960867"
+        },
+        {
+            "success": true,
+            "model_name": "ensemble_model",
+            "confidence_score": 0.0,
+            "trust_level": "Very Low",
+            "uncertainty_score": NaN,
+            "ensemble_agreement": 0.75,
+            "performance_score": 0.0,
+            "confidence_interval": {
+                "lower_bound": NaN,
+                "upper_bound": NaN
+            },
+            "prediction_statistics": {
+                "mean_prediction": NaN,
+                "prediction_std": NaN,
+                "prediction_variance": NaN
+            },
+            "executive_interpretation": "Prediction uncertainty is high. Strategic review required.",
+            "generated_at": "2026-06-09 14:54:15.954177"
+        },
+        {
+            "success": true,
+            "model_name": "ensemble_model",
+            "confidence_score": 0.0,
+            "trust_level": "Very Low",
+            "uncertainty_score": NaN,
+            "ensemble_agreement": 0.75,
+            "performance_score": 0.0,
+            "confidence_interval": {
+                "lower_bound": NaN,
+                "upper_bound": NaN
+            },
+            "prediction_statistics": {
+                "mean_prediction": NaN,
+                "prediction_std": NaN,
+                "prediction_variance": NaN
+            },
+            "executive_interpretation": "Prediction uncertainty is high. Strategic review required.",
+            "generated_at": "2026-06-15 09:04:26.063157"
+        },
+        {
+            "success": true,
+            "model_name": "ensemble_model",
+            "confidence_score": 0.0,
+            "trust_level": "Very Low",
+            "uncertainty_score": NaN,
+            "ensemble_agreement": 0.75,
+            "performance_score": 0.0,
+            "confidence_interval": {
+                "lower_bound": NaN,
+                "upper_bound": NaN
+            },
+            "prediction_statistics": {
+                "mean_prediction": NaN,
+                "prediction_std": NaN,
+                "prediction_variance": NaN
+            },
+            "executive_interpretation": "Prediction uncertainty is high. Strategic review required.",
+            "generated_at": "2026-06-15 11:48:48.451326"
+        },
+        {
+            "success": true,
+            "model_name": "ensemble_model",
+            "confidence_score": 0.0,
+            "trust_level": "Very Low",
+            "uncertainty_score": NaN,
+            "ensemble_agreement": 0.75,
+            "performance_score": 0.0,
+            "confidence_interval": {
+                "lower_bound": NaN,
+                "upper_bound": NaN
+            },
+            "prediction_statistics": {
+                "mean_prediction": NaN,
+                "prediction_std": NaN,
+                "prediction_variance": NaN
+            },
+            "executive_interpretation": "Prediction uncertainty is high. Strategic review required.",
+            "generated_at": "2026-06-15 12:30:32.287001"
+        },
+        {
+            "success": true,
+            "model_name": "ensemble_model",
+            "confidence_score": 0.0,
+            "trust_level": "Very Low",
+            "uncertainty_score": NaN,
+            "ensemble_agreement": 0.75,
+            "performance_score": 0.0,
+            "confidence_interval": {
+                "lower_bound": NaN,
+                "upper_bound": NaN
+            },
+            "prediction_statistics": {
+                "mean_prediction": NaN,
+                "prediction_std": NaN,
+                "prediction_variance": NaN
+            },
+            "executive_interpretation": "Prediction uncertainty is high. Strategic review required.",
+            "generated_at": "2026-06-15 14:33:02.110791"
+        },
+        {
+            "success": true,
+            "model_name": "ensemble_model",
+            "confidence_score": 0.0,
+            "trust_level": "Very Low",
+            "uncertainty_score": NaN,
+            "ensemble_agreement": 0.75,
+            "performance_score": 0.0,
+            "confidence_interval": {
+                "lower_bound": NaN,
+                "upper_bound": NaN
+            },
+            "prediction_statistics": {
+                "mean_prediction": NaN,
+                "prediction_std": NaN,
+                "prediction_variance": NaN
+            },
+            "executive_interpretation": "Prediction uncertainty is high. Strategic review required.",
+            "generated_at": "2026-06-15 14:37:19.696848"
+        },
+        {
+            "success": true,
+            "model_name": "ensemble_model",
+            "confidence_score": 0.0,
+            "trust_level": "Very Low",
+            "uncertainty_score": NaN,
+            "ensemble_agreement": 0.75,
+            "performance_score": 0.0,
+            "confidence_interval": {
+                "lower_bound": NaN,
+                "upper_bound": NaN
+            },
+            "prediction_statistics": {
+                "mean_prediction": NaN,
+                "prediction_std": NaN,
+                "prediction_variance": NaN
+            },
+            "executive_interpretation": "Prediction uncertainty is high. Strategic review required.",
+            "generated_at": "2026-06-16 08:54:18.670273"
+        },
+        {
+            "success": true,
+            "model_name": "ensemble_model",
+            "confidence_score": 0.0,
+            "trust_level": "Very Low",
+            "uncertainty_score": NaN,
+            "ensemble_agreement": 0.75,
+            "performance_score": 0.0,
+            "confidence_interval": {
+                "lower_bound": NaN,
+                "upper_bound": NaN
+            },
+            "prediction_statistics": {
+                "mean_prediction": NaN,
+                "prediction_std": NaN,
+                "prediction_variance": NaN
+            },
+            "executive_interpretation": "Prediction uncertainty is high. Strategic review required.",
+            "generated_at": "2026-06-18 09:22:31.766873"
+        },
+        {
+            "success": true,
+            "model_name": "ensemble_model",
+            "confidence_score": 0.0,
+            "trust_level": "Very Low",
+            "uncertainty_score": NaN,
+            "ensemble_agreement": 0.75,
+            "performance_score": 0.0,
+            "confidence_interval": {
+                "lower_bound": NaN,
+                "upper_bound": NaN
+            },
+            "prediction_statistics": {
+                "mean_prediction": NaN,
+                "prediction_std": NaN,
+                "prediction_variance": NaN
+            },
+            "executive_interpretation": "Prediction uncertainty is high. Strategic review required.",
+            "generated_at": "2026-06-18 09:54:59.974460"
+        },
+        {
+            "success": true,
+            "model_name": "ensemble_model",
+            "confidence_score": 0.0,
+            "trust_level": "Very Low",
+            "uncertainty_score": NaN,
+            "ensemble_agreement": 0.75,
+            "performance_score": 0.0,
+            "confidence_interval": {
+                "lower_bound": NaN,
+                "upper_bound": NaN
+            },
+            "prediction_statistics": {
+                "mean_prediction": NaN,
+                "prediction_std": NaN,
+                "prediction_variance": NaN
+            },
+            "executive_interpretation": "Prediction uncertainty is high. Strategic review required.",
+            "generated_at": "2026-06-18 11:01:01.979801"
+        },
+        {
+            "success": true,
+            "model_name": "ensemble_model",
+            "confidence_score": 0.0,
+            "trust_level": "Very Low",
+            "uncertainty_score": NaN,
+            "ensemble_agreement": 0.75,
+            "performance_score": 0.0,
+            "confidence_interval": {
+                "lower_bound": NaN,
+                "upper_bound": NaN
+            },
+            "prediction_statistics": {
+                "mean_prediction": NaN,
+                "prediction_std": NaN,
+                "prediction_variance": NaN
+            },
+            "executive_interpretation": "Prediction uncertainty is high. Strategic review required.",
+            "generated_at": "2026-06-18 11:22:03.553656"
+        },
+        {
+            "success": true,
+            "model_name": "ensemble_model",
+            "confidence_score": 0.0,
+            "trust_level": "Very Low",
+            "uncertainty_score": NaN,
+            "ensemble_agreement": 0.75,
+            "performance_score": 0.0,
+            "confidence_interval": {
+                "lower_bound": NaN,
+                "upper_bound": NaN
+            },
+            "prediction_statistics": {
+                "mean_prediction": NaN,
+                "prediction_std": NaN,
+                "prediction_variance": NaN
+            },
+            "executive_interpretation": "Prediction uncertainty is high. Strategic review required.",
+            "generated_at": "2026-06-18 11:46:41.359007"
+        },
+        {
+            "success": true,
+            "model_name": "ensemble_model",
+            "confidence_score": 0.0,
+            "trust_level": "Very Low",
+            "uncertainty_score": NaN,
+            "ensemble_agreement": 0.75,
+            "performance_score": 0.0,
+            "confidence_interval": {
+                "lower_bound": NaN,
+                "upper_bound": NaN
+            },
+            "prediction_statistics": {
+                "mean_prediction": NaN,
+                "prediction_std": NaN,
+                "prediction_variance": NaN
+            },
+            "executive_interpretation": "Prediction uncertainty is high. Strategic review required.",
+            "generated_at": "2026-06-18 12:17:44.680140"
+        },
+        {
+            "success": true,
+            "model_name": "ensemble_model",
+            "confidence_score": 0.0,
+            "trust_level": "Very Low",
+            "uncertainty_score": NaN,
+            "ensemble_agreement": 0.75,
+            "performance_score": 0.0,
+            "confidence_interval": {
+                "lower_bound": NaN,
+                "upper_bound": NaN
+            },
+            "prediction_statistics": {
+                "mean_prediction": NaN,
+                "prediction_std": NaN,
+                "prediction_variance": NaN
+            },
+            "executive_interpretation": "Prediction uncertainty is high. Strategic review required.",
+            "generated_at": "2026-06-18 12:30:22.430946"
+        },
+        {
+            "success": true,
+            "model_name": "ensemble_model",
+            "confidence_score": 0.0,
+            "trust_level": "Very Low",
+            "uncertainty_score": NaN,
+            "ensemble_agreement": 0.75,
+            "performance_score": 0.0,
+            "confidence_interval": {
+                "lower_bound": NaN,
+                "upper_bound": NaN
+            },
+            "prediction_statistics": {
+                "mean_prediction": NaN,
+                "prediction_std": NaN,
+                "prediction_variance": NaN
+            },
+            "executive_interpretation": "Prediction uncertainty is high. Strategic review required.",
+            "generated_at": "2026-06-18 12:45:53.664304"
+        },
+        {
+            "success": true,
+            "model_name": "ensemble_model",
+            "confidence_score": 0.0,
+            "trust_level": "Very Low",
+            "uncertainty_score": NaN,
+            "ensemble_agreement": 0.75,
+            "performance_score": 0.0,
+            "confidence_interval": {
+                "lower_bound": NaN,
+                "upper_bound": NaN
+            },
+            "prediction_statistics": {
+                "mean_prediction": NaN,
+                "prediction_std": NaN,
+                "prediction_variance": NaN
+            },
+            "executive_interpretation": "Prediction uncertainty is high. Strategic review required.",
+            "generated_at": "2026-06-18 13:44:12.406073"
+        },
+        {
+            "success": true,
+            "model_name": "ensemble_model",
+            "confidence_score": 0.0,
+            "trust_level": "Very Low",
+            "uncertainty_score": NaN,
+            "ensemble_agreement": 0.75,
+            "performance_score": 0.0,
+            "confidence_interval": {
+                "lower_bound": NaN,
+                "upper_bound": NaN
+            },
+            "prediction_statistics": {
+                "mean_prediction": NaN,
+                "prediction_std": NaN,
+                "prediction_variance": NaN
+            },
+            "executive_interpretation": "Prediction uncertainty is high. Strategic review required.",
+            "generated_at": "2026-06-18 19:59:20.669837"
+        },
+        {
+            "success": true,
+            "model_name": "ensemble_model",
+            "confidence_score": 0.0,
+            "trust_level": "Very Low",
+            "uncertainty_score": NaN,
+            "ensemble_agreement": 0.75,
+            "performance_score": 0.0,
+            "confidence_interval": {
+                "lower_bound": NaN,
+                "upper_bound": NaN
+            },
+            "prediction_statistics": {
+                "mean_prediction": NaN,
+                "prediction_std": NaN,
+                "prediction_variance": NaN
+            },
+            "executive_interpretation": "Prediction uncertainty is high. Strategic review required.",
+            "generated_at": "2026-06-18 20:36:43.149969"
+        },
+        {
+            "success": true,
+            "model_name": "ensemble_model",
+            "confidence_score": 0.0,
+            "trust_level": "Very Low",
+            "uncertainty_score": NaN,
+            "ensemble_agreement": 0.75,
+            "performance_score": 0.0,
+            "confidence_interval": {
+                "lower_bound": NaN,
+                "upper_bound": NaN
+            },
+            "prediction_statistics": {
+                "mean_prediction": NaN,
+                "prediction_std": NaN,
+                "prediction_variance": NaN
+            },
+            "executive_interpretation": "Prediction uncertainty is high. Strategic review required.",
+            "generated_at": "2026-06-19 07:01:56.808624"
+        },
+        {
+            "success": true,
+            "model_name": "ensemble_model",
+            "confidence_score": 0.0,
+            "trust_level": "Very Low",
+            "uncertainty_score": NaN,
+            "ensemble_agreement": 0.75,
+            "performance_score": 0.0,
+            "confidence_interval": {
+                "lower_bound": NaN,
+                "upper_bound": NaN
+            },
+            "prediction_statistics": {
+                "mean_prediction": NaN,
+                "prediction_std": NaN,
+                "prediction_variance": NaN
+            },
+            "executive_interpretation": "Prediction uncertainty is high. Strategic review required.",
+            "generated_at": "2026-06-19 09:08:47.610325"
+        },
+        {
+            "success": true,
+            "model_name": "ensemble_model",
+            "confidence_score": 0.0,
+            "trust_level": "Very Low",
+            "uncertainty_score": NaN,
+            "ensemble_agreement": 0.75,
+            "performance_score": 0.0,
+            "confidence_interval": {
+                "lower_bound": NaN,
+                "upper_bound": NaN
+            },
+            "prediction_statistics": {
+                "mean_prediction": NaN,
+                "prediction_std": NaN,
+                "prediction_variance": NaN
+            },
+            "executive_interpretation": "Prediction uncertainty is high. Strategic review required.",
+            "generated_at": "2026-06-22 11:23:45.887193"
+        },
+        {
+            "success": true,
+            "model_name": "ensemble_model",
+            "confidence_score": 0.0,
+            "trust_level": "Very Low",
+            "uncertainty_score": NaN,
+            "ensemble_agreement": 0.75,
+            "performance_score": 0.0,
+            "confidence_interval": {
+                "lower_bound": NaN,
+                "upper_bound": NaN
+            },
+            "prediction_statistics": {
+                "mean_prediction": NaN,
+                "prediction_std": NaN,
+                "prediction_variance": NaN
+            },
+            "executive_interpretation": "Prediction uncertainty is high. Strategic review required.",
+            "generated_at": "2026-06-24 08:56:37.629010"
+        },
+        {
+            "success": true,
+            "model_name": "ensemble_model",
+            "confidence_score": 0.0,
+            "trust_level": "Very Low",
+            "uncertainty_score": NaN,
+            "ensemble_agreement": 0.75,
+            "performance_score": 0.0,
+            "confidence_interval": {
+                "lower_bound": NaN,
+                "upper_bound": NaN
+            },
+            "prediction_statistics": {
+                "mean_prediction": NaN,
+                "prediction_std": NaN,
+                "prediction_variance": NaN
+            },
+            "executive_interpretation": "Prediction uncertainty is high. Strategic review required.",
+            "generated_at": "2026-06-24 12:00:20.927396"
+        },
+        {
+            "success": true,
+            "model_name": "ensemble_model",
+            "confidence_score": 0.0,
+            "trust_level": "Very Low",
+            "uncertainty_score": NaN,
+            "ensemble_agreement": 0.75,
+            "performance_score": 0.0,
+            "confidence_interval": {
+                "lower_bound": NaN,
+                "upper_bound": NaN
+            },
+            "prediction_statistics": {
+                "mean_prediction": NaN,
+                "prediction_std": NaN,
+                "prediction_variance": NaN
+            },
+            "executive_interpretation": "Prediction uncertainty is high. Strategic review required.",
+            "generated_at": "2026-06-29 12:50:37.120365"
+        }
+    ]
+}

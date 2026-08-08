@@ -1,0 +1,138 @@
+{
+    "success": true,
+    "drift_detected": false,
+    "drift_percentage": 0.0,
+    "total_columns_checked": 11,
+    "drifted_columns": 0,
+    "feature_drift_results": [
+        {
+            "column": "company_id",
+            "drift_detected": "False",
+            "ks_statistic": 0.0,
+            "ks_pvalue": 1.0,
+            "wasserstein_distance": 0.0,
+            "reference_mean": 1000.5,
+            "current_mean": 1000.5,
+            "reference_std": 577.3502,
+            "current_std": 577.3502
+        },
+        {
+            "column": "annual_revenue",
+            "drift_detected": "False",
+            "ks_statistic": 0.0,
+            "ks_pvalue": 1.0,
+            "wasserstein_distance": 0.0,
+            "reference_mean": 501071.515,
+            "current_mean": 501071.515,
+            "reference_std": 80688.1335,
+            "current_std": 80688.1335
+        },
+        {
+            "column": "operating_expenses",
+            "drift_detected": "False",
+            "ks_statistic": 0.0,
+            "ks_pvalue": 1.0,
+            "wasserstein_distance": 0.0,
+            "reference_mean": 338366.28,
+            "current_mean": 338366.28,
+            "reference_std": 65472.7949,
+            "current_std": 65472.7949
+        },
+        {
+            "column": "net_profit",
+            "drift_detected": "False",
+            "ks_statistic": 0.0,
+            "ks_pvalue": 1.0,
+            "wasserstein_distance": 0.0,
+            "reference_mean": 162705.235,
+            "current_mean": 162705.235,
+            "reference_std": 44810.3809,
+            "current_std": 44810.3809
+        },
+        {
+            "column": "cash_balance",
+            "drift_detected": "False",
+            "ks_statistic": 0.0,
+            "ks_pvalue": 1.0,
+            "wasserstein_distance": 0.0,
+            "reference_mean": 174517.6461,
+            "current_mean": 174517.6461,
+            "reference_std": 72458.0595,
+            "current_std": 72458.0595
+        },
+        {
+            "column": "total_debt",
+            "drift_detected": "False",
+            "ks_statistic": 0.0,
+            "ks_pvalue": 1.0,
+            "wasserstein_distance": 0.0,
+            "reference_mean": 64595.0273,
+            "current_mean": 64595.0273,
+            "reference_std": 31632.7372,
+            "current_std": 31632.7372
+        },
+        {
+            "column": "current_ratio",
+            "drift_detected": "False",
+            "ks_statistic": 0.0,
+            "ks_pvalue": 1.0,
+            "wasserstein_distance": 0.0,
+            "reference_mean": 2.5279,
+            "current_mean": 2.5279,
+            "reference_std": 0.5767,
+            "current_std": 0.5767
+        },
+        {
+            "column": "debt_to_equity",
+            "drift_detected": "False",
+            "ks_statistic": 0.0,
+            "ks_pvalue": 1.0,
+            "wasserstein_distance": 0.0,
+            "reference_mean": 0.54,
+            "current_mean": 0.54,
+            "reference_std": 0.202,
+            "current_std": 0.202
+        },
+        {
+            "column": "employee_count",
+            "drift_detected": "False",
+            "ks_statistic": 0.0,
+            "ks_pvalue": 1.0,
+            "wasserstein_distance": 0.0,
+            "reference_mean": 528.113,
+            "current_mean": 528.113,
+            "reference_std": 273.5207,
+            "current_std": 273.5207
+        },
+        {
+            "column": "customer_churn_pct",
+            "drift_detected": "False",
+            "ks_statistic": 0.0,
+            "ks_pvalue": 1.0,
+            "wasserstein_distance": 0.0,
+            "reference_mean": 4.4732,
+            "current_mean": 4.4732,
+            "reference_std": 2.031,
+            "current_std": 2.031
+        },
+        {
+            "column": "bankruptcy_label",
+            "drift_detected": "False",
+            "ks_statistic": 0.0,
+            "ks_pvalue": 1.0,
+            "wasserstein_distance": 0.0,
+            "reference_mean": 0.0,
+            "current_mean": 0.0,
+            "reference_std": 0.0,
+            "current_std": 0.0
+        }
+    ],
+    "target_drift": null,
+    "seasonality_shift": {
+        "shift_detected": false,
+        "reason": "No datetime columns detected."
+    },
+    "detector_name": "Maduk Enterprise Drift Detector",
+    "detector_version": "1.0.0",
+    "timestamp": "2026-07-25T06:11:35.668301"
+}

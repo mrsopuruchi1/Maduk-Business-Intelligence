@@ -1,0 +1,6 @@
+{"timestamp": "2026-05-22T11:47:21.456983", "pipeline_stage": "PIPELINE-EXECUTION", "status": "FAILED", "details": {}, "error_message": "select_best_features() missing 1 required positional argument: 'target_column'"}
+{"timestamp": "2026-05-22T11:57:32.368308", "pipeline_stage": "PIPELINE-EXECUTION", "status": "FAILED", "details": {}, "error_message": "name 'target_column' is not defined"}
+{"timestamp": "2026-05-22T13:13:17.855124", "pipeline_stage": "PIPELINE-EXECUTION", "status": "FAILED", "details": {}, "error_message": "local variable 'target_variable' referenced before assignment"}
+{"timestamp": "2026-05-22T13:59:42.200033", "pipeline_stage": "PIPELINE_EXECUTION", "status": "FAILED", "details": {"error_message": "detect_target_variable() takes 1 positional argument but 2 were given"}, "error_message": null}
+{"timestamp": "2026-05-22T14:37:38.193451", "pipeline_stage": "PIPELINE_EXECUTION", "status": "FAILED", "details": {"error_message": "feature_store() missing 1 required positional argument: 'dataset_name'"}, "error_message": null}
+{"timestamp": "2026-05-22T15:09:51.054615", "pipeline_stage": "PIPELINE_EXECUTION", "status": "FAILED", "details": {"error_message": "name 'target_variable_result' is not defined"}, "error_message": null}

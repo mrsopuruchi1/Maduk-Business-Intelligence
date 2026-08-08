@@ -1,0 +1,1 @@
+{"timestamp": "2026-06-16T08:54:19.014451", "pipeline_stage": "PIPELINE_EXECUTION", "status": "FAILED", "details": {"error_message": "generate_business_strategies() missing 1 required positional argument: 'prediction_results'"}, "error_message": null}
