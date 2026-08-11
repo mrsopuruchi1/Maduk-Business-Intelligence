@@ -2,7 +2,7 @@ services:
   - type: web
     name: maduk-bi-frontend
     runtime: python
-    plan: starter
+    plan: free
     region: frankfurt
     buildCommand: pip install -r frontend/requirements.txt
     startCommand: streamlit run frontend/App.py --server.address 0.0.0.0 --server.port $PORT
@@ -18,7 +18,7 @@ services:
   - type: web
     name: maduk-bi-backend
     runtime: python
-    plan: standard
+    plan: free
     region: frankfurt
     buildCommand: pip install -r backend/requirements.txt
     startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
@@ -66,6 +66,6 @@ services:
 
 databases:
   - name: maduk-bi-postgres
-    plan: basic-256mb
+    plan: free
     region: frankfurt
     postgresMajorVersion: "17"
