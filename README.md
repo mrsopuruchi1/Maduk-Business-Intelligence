@@ -1,8 +1,8 @@
-# D2D Intelligence Engine
+# Maduk Business Intelligence (Maduk BI)
 
-Data-to-Decision (D2D) Intelligence Engine is an AI-powered analytics model designed to transform raw data into actionable insights. It can ingest data in multiple formats, automatically clean and process it, perform exploratory analysis, and generate meaningful visualizations that help users clearly understand the information contained within their data.
+Maduk-Business-Intelligence is an AI SaaS platform that contains softwares that perform data analysis, business revenue forecast, and business health prediction & recommendation that help digital agencies and service business executives to make informed data-driven decisions.
 
-Beyond analysis, the D2D Intelligence Engine learns patterns within datasets to produce predictions and intelligent recommendations. Developed by Engr. Sopuruchi Maduka (Data Scientist and Machine Learning Specialist), the system is built to support digital agencies and service-based businesses in making data-driven decisions that improve performance, optimize strategy, and increase revenue.
+Maduk BI also contains AI chatbot that answers questions about a business based on the dataset uploaded to it. The platform serves as an autonomous AI business consultant that helps digital agencies and service businesses to make informed decisions and succeed.
 
 Built with:
 - Streamlit frontend
