@@ -15,6 +15,7 @@ from typing import Any, Dict
 import pandas as pd
 import requests
 import streamlit as st
+from utils.api_config import get_backend_url
 
 
 def render_predict_your_business_page():
@@ -402,7 +403,7 @@ def render_predict_your_business_page():
         else:
             with st.spinner("Executing AI Revenue Forecasting Engine..."):
                 try:
-                    API_URL = "http://127.0.0.1:8000/ai-business-prediction/run-pipeline"
+                    API_URL = f"{get_backend_url()}/ai-business-prediction/run-pipeline"
                     uploaded_file.seek(0)
 
                     files = {
@@ -602,7 +603,7 @@ def render_predict_your_business_page():
                             )
 
                             # Request PDF from Backend Endpoint
-                            PDF_API_URL = "http://127.0.0.1:8000/ai-business-prediction/generate-pdf-report"
+                            PDF_API_URL = f"{get_backend_url()}/ai-business-prediction/generate-pdf-report"
                             pdf_res = requests.post(PDF_API_URL, json=results, timeout=120)
 
                             if pdf_res.status_code == 200:

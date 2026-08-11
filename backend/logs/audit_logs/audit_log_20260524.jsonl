@@ -1,3 +1,0 @@
-{"timestamp": "2026-05-24T07:02:03.804861", "pipeline_stage": "PIPELINE_EXECUTION", "status": "FAILED", "details": {"error_message": "tune_hyperparameters() missing 1 required positional argument: 'model_name'"}, "error_message": null}
-{"timestamp": "2026-05-24T07:11:56.762735", "pipeline_stage": "PIPELINE_EXECUTION", "status": "FAILED", "details": {"error_message": "name 'model_name' is not defined"}, "error_message": null}
-{"timestamp": "2026-05-24T08:02:25.908364", "pipeline_stage": "PIPELINE_EXECUTION", "status": "FAILED", "details": {"error_message": "tune_hyperparameters() missing 1 required positional argument: 'model_name'"}, "error_message": null}

@@ -1,2 +1,0 @@
-{"timestamp": "2026-06-05T13:23:52.087439", "pipeline_stage": "PIPELINE_EXECUTION", "status": "FAILED", "details": {"error_message": "name 'trend_analysis_engine' is not defined"}, "error_message": null}
-{"timestamp": "2026-06-05T14:59:15.259873", "pipeline_stage": "PIPELINE_EXECUTION", "status": "FAILED", "details": {"error_message": "name 'trend_analysis_engine' is not defined"}, "error_message": null}

@@ -1,3 +1,0 @@
-{"timestamp": "2026-06-09T11:57:11.076927", "pipeline_stage": "PIPELINE_EXECUTION", "status": "FAILED", "details": {"error_message": "name 'prepared_dataset' is not defined"}, "error_message": null}
-{"timestamp": "2026-06-09T13:29:32.359869", "pipeline_stage": "PIPELINE_EXECUTION", "status": "FAILED", "details": {"error_message": "generate_risk_scores() missing 2 required positional arguments: 'prediction_results' and 'forecast_results'"}, "error_message": null}
-{"timestamp": "2026-06-09T14:54:15.983251", "pipeline_stage": "PIPELINE_EXECUTION", "status": "FAILED", "details": {"error_message": "generate_executive_summary() missing 1 required positional argument: 'business_context'"}, "error_message": null}

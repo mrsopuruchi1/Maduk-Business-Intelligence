@@ -8,9 +8,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, Depends, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
 from jose import JWTError, jwt
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import sessionmaker
-import aioredis
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.database import Base, init_db
 from backend.services.auth import get_current_user
@@ -32,7 +30,7 @@ load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
-REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")
+REDIS_URL = os.getenv("REDIS_URL")
 
 # ----------------------------
 # APP INITIALIZATION
@@ -55,9 +53,10 @@ app.include_router(ai_recommendation_pipeline_route.router)
 # ----------------------------
 # CORS
 # ----------------------------
+FRONTEND_URL = os.getenv("FRONTEND_URL")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[FRONTEND_URL] if FRONTEND_URL else ["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -66,8 +65,8 @@ app.add_middleware(
 # ----------------------------
 # DATABASE SETUP
 # ----------------------------
-engine = create_async_engine(DATABASE_URL, future=True, echo=False)
-AsyncSessionLocal = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
+# Database engine/session are provided by backend.database so the application
+# uses one connection pool and one Base metadata registry.
 
 async def get_db() -> AsyncSession:
     async with AsyncSessionLocal() as session:
@@ -76,10 +75,13 @@ async def get_db() -> AsyncSession:
 # ----------------------------
 # REDIS (SAFE MODE)
 # ----------------------------
-try:
-    redis = aioredis.from_url(REDIS_URL, decode_responses=True)
-except:
-    redis = None
+redis = None
+if REDIS_URL:
+    try:
+        import redis.asyncio as redis_lib
+        redis = redis_lib.from_url(REDIS_URL, decode_responses=True)
+    except Exception:
+        redis = None
 
 # ----------------------------
 # TENANT AUTH (UPDATED)
@@ -212,6 +214,11 @@ async def ai_advice(
 @app.get("/")
 async def root():
     return {"message": "Maduk Business Intelligence Backend Running"}
+
+
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
 
 # ----------------------------
 # STARTUP

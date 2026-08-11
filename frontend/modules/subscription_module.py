@@ -3,7 +3,9 @@ import requests
 import os
 import time
 
-BASE_URL = os.getenv("API_URL", "http://localhost:8000")
+from utils.api_config import get_backend_url
+
+BASE_URL = get_backend_url()
 
 
 def render_subscription_module(user_token: str):

@@ -8,7 +8,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Async database URL from .env
-DATABASE_URL = os.getenv("DATABASE_URL")  # e.g., postgresql+asyncpg://user:pass@localhost/dbname
+DATABASE_URL = os.getenv("DATABASE_URL")  # Render provides postgresql://...
+if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = "postgresql+asyncpg://" + DATABASE_URL[len("postgres://"):]
+elif DATABASE_URL and DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = "postgresql+asyncpg://" + DATABASE_URL[len("postgresql://"):]
 
 # Async SQLAlchemy engine
 engine = create_async_engine(

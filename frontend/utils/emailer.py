@@ -16,7 +16,7 @@ def send_email(to_email, subject, body, attachment_path):
 
     # Validate environment variables
     if not smtp_server or not smtp_port or not smtp_email or not smtp_password:
-        raise Exception("SMTP settings missing in .env")
+        raise Exception("SMTP settings are missing from the application environment")
 
     msg = EmailMessage()
     msg["Subject"] = subject

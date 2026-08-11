@@ -15,11 +15,12 @@ from typing import Dict, Any, Optional
 import pandas as pd
 import requests
 import streamlit as st
+from utils.api_config import get_backend_url
 
 # Configurable backend endpoint URL
 BACKEND_ENDPOINT = os.getenv(
     "BACKEND_API_URL", 
-    "http://127.0.0.1:8000/api/v1/recommendations/analyze"
+    f"{get_backend_url()}/api/v1/recommendations/analyze"
 )
 
 

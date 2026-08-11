@@ -3,7 +3,9 @@ import requests
 import os
 import pandas as pd
 
-BASE_URL = os.getenv("API_URL", "http://localhost:8000")
+from utils.api_config import get_backend_url
+
+BASE_URL = get_backend_url()
 
 
 def render_membership_dashboard_module(user_token: str, tenant_id: int, tenant_name: str):

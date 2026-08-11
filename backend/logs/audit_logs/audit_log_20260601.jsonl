@@ -1,1 +1,0 @@
-{"timestamp": "2026-06-01T07:01:44.126890", "pipeline_stage": "PIPELINE_EXECUTION", "status": "FAILED", "details": {"error_message": "monitor_model_performance() missing 2 required positional arguments: 'actual_values' and 'predicted_values'"}, "error_message": null}

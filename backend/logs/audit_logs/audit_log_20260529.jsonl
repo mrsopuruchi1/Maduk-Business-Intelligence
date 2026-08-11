@@ -1,1 +1,0 @@
-{"timestamp": "2026-05-29T14:36:02.803659", "pipeline_stage": "PIPELINE_EXECUTION", "status": "FAILED", "details": {"error_message": "evaluate_models() got an unexpected keyword argument 'prediction_models'"}, "error_message": null}

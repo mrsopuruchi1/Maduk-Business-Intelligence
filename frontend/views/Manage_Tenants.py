@@ -12,7 +12,9 @@ from utils.workspace_state import (
     get_active_workspace
 )
 
-BASE_URL = os.getenv("API_URL", "http://localhost:8000")
+from utils.api_config import get_backend_url
+
+BASE_URL = get_backend_url()
 
 
 def render_manage_tenants_page():

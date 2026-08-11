@@ -1,2 +1,0 @@
-{"timestamp": "2026-06-08T06:44:33.416783", "pipeline_stage": "PIPELINE_EXECUTION", "status": "FAILED", "details": {"error_message": "'TrendAnalysisEngine' object has no attribute 'analyze_business_trends'"}, "error_message": null}
-{"timestamp": "2026-06-08T15:27:08.091033", "pipeline_stage": "PIPELINE_EXECUTION", "status": "FAILED", "details": {"error_message": "name 'TrendAnalysisEngine' is not defined"}, "error_message": null}

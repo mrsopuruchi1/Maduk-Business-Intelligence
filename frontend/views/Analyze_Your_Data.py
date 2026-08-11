@@ -1,4 +1,5 @@
 import streamlit as st
+from utils.api_config import get_backend_url
 import requests
 import json
 import base64
@@ -107,7 +108,7 @@ def render_analyze_your_data_page():
         logs = []
         final_result = None
 
-        url = "http://127.0.0.1:8000/run-pipeline-stream"
+        url = f"{get_backend_url()}/run-pipeline-stream"
         files = {"file": uploaded_file}
 
         try:

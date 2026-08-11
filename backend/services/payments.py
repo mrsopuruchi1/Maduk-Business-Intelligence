@@ -4,7 +4,6 @@ import os
 import httpx
 from datetime import datetime
 
-from backend.services.plan_access import activate_subscription
 
 FLUTTERWAVE_SECRET_KEY = os.getenv("FLUTTERWAVE_SECRET_KEY")
 FLUTTERWAVE_BASE_URL = "https://api.flutterwave.com/v3"
@@ -32,7 +31,7 @@ async def create_payment_plan(name: str, amount: int):
     url = "https://api.flutterwave.com/v3/payment-plans"
 
     headers = {
-        "Authorization": f"Bearer {FLW_SECRET_KEY}"
+        "Authorization": f"Bearer {FLUTTERWAVE_SECRET_KEY}"
     }
 
     payload = {
@@ -82,7 +81,9 @@ async def create_flutterwave_subscription(
         "tx_ref": tx_ref,
         "amount": amount,
         "currency": currency,
-        "redirect_url": "http://localhost:8000/payment-success",
+                    "redirect_url": (
+                f"{os.getenv('BACKEND_PUBLIC_URL') or os.getenv('RENDER_EXTERNAL_URL') or 'http://localhost:8000'}/payment-success"
+            ),
         "payment_plan": PLAN_IDS[plan],
         "customer": {
             "email": email
@@ -160,12 +161,27 @@ async def verify_flutterwave_transaction(transaction_id: str, db):
 
     if status == "successful":
 
-        await activate_subscription(
-            db=db,
-            user_tenant_id=subscription.user_tenant_id,
-            plan=subscription.plan,
-            flutterwave_tx_id=transaction_id 
+        from sqlalchemy import select
+        from backend.models.subscription import Subscription
+        from backend.models.user_tenant import UserTenant
+
+        result = await db.execute(
+            select(Subscription).where(Subscription.tx_ref == data.get("tx_ref"))
         )
+        subscription = result.scalar_one_or_none()
+
+        if subscription:
+            subscription.status = "active"
+            subscription.plan = plan
+            user_tenant_result = await db.execute(
+                select(UserTenant).where(UserTenant.id == subscription.user_tenant_id)
+            )
+            user_tenant = user_tenant_result.scalar_one_or_none()
+            if user_tenant:
+                user_tenant.subscription_plan = plan
+                db.add(user_tenant)
+            db.add(subscription)
+            await db.commit()
 
         return {
             "status": "success",
@@ -178,6 +194,3 @@ async def verify_flutterwave_transaction(transaction_id: str, db):
         "status": "failed",
         "message": "Payment not successful"
     }
-
-
-print("FLW_SECRET_KEY:", FLUTTERWAVE_SECRET_KEY)
