@@ -20,6 +20,22 @@ logger = logging.getLogger("MadukBI.AnomalyDetectionEngine")
 class AnomalyDetectionEngine:
     """Detects metric anomalies, statistical outliers, categorizes risks, and extracts growth opportunities."""
 
+    @staticmethod
+    def _format_period(df: pd.DataFrame, row_idx: Any, date_col: Optional[str]) -> str:
+        """Safely format the row period when a date column exists."""
+        if not date_col or date_col not in df.columns:
+            return f"Row {row_idx}"
+
+        value = df.loc[row_idx, date_col]
+
+        if pd.isna(value):
+            return f"Row {row_idx}"
+
+        if hasattr(value, "strftime"):
+            return value.strftime("%Y-%m-%d")
+
+        return str(value)
+    
     def detect(self, df: pd.DataFrame, mapping: Dict[str, str], kpis: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """
         Scans numerical indicators, flags statistical anomalies, categorizes risks by severity level,
@@ -74,9 +90,15 @@ class AnomalyDetectionEngine:
                         val = series.loc[idx]
                         z_val = abs(z_scores.loc[idx])
                         
-                        date_str = str(df.loc[idx, date_col]) if date_col and date_col in df else f"Row {idx}"
-                        if hasattr(df.loc[idx, date_col], 'strftime'):
-                            date_str = df.loc[idx, date_col].strftime('%Y-%m-%d')
+                        if date_col and date_col in df.columns:
+                            date_value = df.loc[idx, date_col]
+
+                            if pd.notna(date_value) and hasattr(date_value, 'strftime'):
+                                date_str = date_value.strftime('%Y-%m-%d')
+                            else:
+                                date_str = str(date_value)
+                        else:
+                            date_str = f"Row {idx}"
 
                         if z_val > 3.0 or (col_key == 'revenue' and val < mean_val * 0.5):
                             severity = "Critical"
@@ -124,9 +146,15 @@ class AnomalyDetectionEngine:
                     outlier_indices = np.where(preds == -1)[0]
                     for idx in outlier_indices:
                         row_idx = df.index[idx]
-                        date_str = str(df.loc[row_idx, date_col]) if date_col and date_col in df else f"Row {row_idx}"
-                        if hasattr(df.loc[row_idx, date_col], 'strftime'):
-                            date_str = df.loc[row_idx, date_col].strftime('%Y-%m-%d')
+                        if date_col and date_col in df.columns:
+                            date_value = df.loc[row_idx, date_col]
+
+                            if pd.notna(date_value) and hasattr(date_value, 'strftime'):
+                                date_str = date_value.strftime('%Y-%m-%d')
+                            else:
+                                date_str = str(date_value)
+                        else:
+                            date_str = f"Row {row_idx}"
 
                         details_msg = f"Unusual multivariate metric distribution detected around period {date_str}."
                         

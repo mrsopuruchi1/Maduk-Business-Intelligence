@@ -143,7 +143,7 @@ class BusinessIntelligencePipeline:
         # Stage 5: Anomaly Detection
         # ------------------------------------------------------------------
         logger.info("[Stage 5/12] Detecting anomalies, outliers, and revenue risks...")
-        anomalies = self.anomaly_detection.detect(df_engineered, mapped_cols)
+        anomalies = self.anomaly_detection.detect(df_engineered, mapped_cols, computed_kpis)
 
         # ------------------------------------------------------------------
         # Stage 6: Correlation & Driver Analysis
