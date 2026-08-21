@@ -56,7 +56,7 @@ class AIPredictionPipeline:
         min_train_size = max(3, int(self.config.get("min_train_size", 12)))
 
         self.profiler = DataProfiler()
-        self.validator = DataValidator()
+        self.validator = DataValidator(run_stationarity_tests=False)
         self.detector = TimeSeriesDetector()
         self.feature_engine = FeatureEngineering()
         self.metrics_evaluator = MetricsEvaluator()
