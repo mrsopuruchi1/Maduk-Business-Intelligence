@@ -79,7 +79,7 @@ class DataValidator:
             for c in clean_df.columns 
         ]
 
-        logger.info(f"Column headers standardized: {list(clean_df.colums)}") 
+        logger.info(f"Column headers standardized: {list(clean_df.columns)}") 
 
         # Prevent duplicate column names after normalization.
         clean_df = self._make_unique_columns(clean_df)
