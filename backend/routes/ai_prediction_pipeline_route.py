@@ -13,18 +13,15 @@ import logging
 import io
 import os
 from typing import Dict, Any, Optional, List
+
 from fastapi import APIRouter, UploadFile, File, Form, status, Body
 from fastapi.responses import StreamingResponse, Response
 import pandas as pd
 
-import matplotlib
-matplotlib.use("Agg")  # Non-interactive backend for server-side PDF generation
-import matplotlib.pyplot as plt
-
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.lib.units import inch
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image as RLImage, KeepTogether
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image as RLImage
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 
 from backend.services.ai_prediction_pipeline.prediction_pipeline import AIPredictionPipeline
@@ -36,8 +33,24 @@ router = APIRouter(
     tags=["AI Prediction Pipeline"]
 )
 
-# Initialize pipeline orchestrator instance
-pipeline = AIPredictionPipeline()
+# =========================================================
+# LAZY PIPELINE INITIALIZATION
+# =========================================================
+# Do not initialize the complete AI pipeline during FastAPI startup.
+# This reduces startup cost and helps prevent Render health-check timeouts.
+_pipeline = None
+
+
+def get_pipeline() -> AIPredictionPipeline:
+    """Return a lazily initialized AI prediction pipeline instance."""
+    global _pipeline
+
+    if _pipeline is None:
+        logger.info("Initializing Maduk BI AI Prediction Pipeline...")
+        _pipeline = AIPredictionPipeline()
+        logger.info("Maduk BI AI Prediction Pipeline initialized successfully.")
+
+    return _pipeline
 
 
 def _horizon_str_to_int(horizon_str: str) -> int:
@@ -55,8 +68,8 @@ def _horizon_str_to_int(horizon_str: str) -> int:
 
 
 def _extract_dataframe_from_upload(file: UploadFile, contents: bytes) -> pd.DataFrame:
-    """Parses uploaded multipart CSV/Excel files into a Pandas DataFrame."""
-    filename = file.filename.lower()
+    """Parses uploaded multipart CSV/Excel/Parquet files into a Pandas DataFrame."""
+    filename = (file.filename or "").lower()
     if filename.endswith(".csv"):
         return pd.read_csv(io.BytesIO(contents))
     elif filename.endswith((".xlsx", ".xls")):
@@ -64,14 +77,20 @@ def _extract_dataframe_from_upload(file: UploadFile, contents: bytes) -> pd.Data
     elif filename.endswith(".parquet"):
         return pd.read_parquet(io.BytesIO(contents))
     else:
-        raise ValueError("Unsupported file format. Please upload a .csv, .xlsx, or .parquet file.")
+        raise ValueError("Unsupported file format. Please upload a .csv, .xlsx, .xls, or .parquet file.")
 
 
 # =========================================================
-# 🎨 PDF CHART & REPORT GENERATION UTILITIES
+# PDF CHART & REPORT GENERATION UTILITIES
 # =========================================================
 def _generate_line_chart_bytes(forecast_data: List[Dict[str, Any]]) -> io.BytesIO:
     """Generates a Line Chart image buffer for Revenue Forecast Trajectory."""
+    # Matplotlib is intentionally imported lazily. Normal forecast requests
+    # do not need chart generation and therefore avoid its startup/font-cache cost.
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
     df_fc = pd.DataFrame(forecast_data)
     buf = io.BytesIO()
 
@@ -82,15 +101,13 @@ def _generate_line_chart_bytes(forecast_data: List[Dict[str, Any]]) -> io.BytesI
     if not df_fc.empty and "forecast" in df_fc.columns:
         x_axis = df_fc["date"] if "date" in df_fc.columns else range(len(df_fc))
         y_axis = df_fc["forecast"]
-        
         ax.plot(x_axis, y_axis, color="#38bdf8", linewidth=2.5, marker="o", markersize=3, label="Forecasted Revenue")
         ax.fill_between(range(len(df_fc)), y_axis, color="#38bdf8", alpha=0.15)
 
     ax.set_title("Projected Revenue Trajectory", color="#ffffff", fontsize=11, fontweight="bold", pad=10)
     ax.tick_params(colors="#94a3b8", labelsize=7)
     ax.grid(True, linestyle="--", alpha=0.2, color="#94a3b8")
-    
-    # Format axes
+
     for spine in ax.spines.values():
         spine.set_color("#334155")
 
@@ -104,8 +121,12 @@ def _generate_line_chart_bytes(forecast_data: List[Dict[str, Any]]) -> io.BytesI
 
 def _generate_bar_chart_bytes(metrics: Dict[str, Any]) -> io.BytesIO:
     """Generates a Bar Chart image buffer for Model Evaluation Metrics."""
-    buf = io.BytesIO()
+    # Matplotlib is only loaded when a PDF report is requested.
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
 
+    buf = io.BytesIO()
     fig, ax = plt.subplots(figsize=(6.5, 2.5), dpi=150)
     fig.patch.set_facecolor("#0f172a")
     ax.set_facecolor("#1e293b")
@@ -118,19 +139,23 @@ def _generate_bar_chart_bytes(metrics: Dict[str, Any]) -> io.BytesIO:
     ]
 
     bars = ax.bar(metric_names, values, color=["#facc15", "#38bdf8", "#22c55e"], width=0.45)
-
     ax.set_title("Model Error Metrics Breakdown", color="#ffffff", fontsize=11, fontweight="bold", pad=10)
     ax.tick_params(colors="#94a3b8", labelsize=8)
     ax.grid(True, linestyle="--", alpha=0.2, color="#94a3b8", axis="y")
 
     for bar in bars:
         height = bar.get_height()
-        ax.annotate(f"{height:,.2f}",
-                    xy=(bar.get_x() + bar.get_width() / 2, height),
-                    xytext=(0, 3),
-                    textcoords="offset points",
-                    ha="center", va="bottom",
-                    color="#ffffff", fontsize=7, fontweight="bold")
+        ax.annotate(
+            f"{height:,.2f}",
+            xy=(bar.get_x() + bar.get_width() / 2, height),
+            xytext=(0, 3),
+            textcoords="offset points",
+            ha="center",
+            va="bottom",
+            color="#ffffff",
+            fontsize=7,
+            fontweight="bold"
+        )
 
     for spine in ax.spines.values():
         spine.set_color("#334155")
@@ -155,42 +180,23 @@ def _generate_pdf_report_bytes(payload: Dict[str, Any]) -> bytes:
     )
 
     styles = getSampleStyleSheet()
-    
     title_style = ParagraphStyle(
-        "DocTitle",
-        parent=styles["Normal"],
-        fontName="Helvetica-Bold",
-        fontSize=18,
-        leading=22,
-        textColor=colors.HexColor("#0f172a"),
-        alignment=1,  # Centered
-        spaceAfter=10
+        "DocTitle", parent=styles["Normal"], fontName="Helvetica-Bold",
+        fontSize=18, leading=22, textColor=colors.HexColor("#0f172a"),
+        alignment=1, spaceAfter=10
     )
-    
     section_heading = ParagraphStyle(
-        "SectionHeading",
-        parent=styles["Normal"],
-        fontName="Helvetica-Bold",
-        fontSize=12,
-        leading=16,
-        textColor=colors.HexColor("#1e293b"),
-        spaceBefore=10,
-        spaceAfter=6
+        "SectionHeading", parent=styles["Normal"], fontName="Helvetica-Bold",
+        fontSize=12, leading=16, textColor=colors.HexColor("#1e293b"),
+        spaceBefore=10, spaceAfter=6
     )
-
     body_style = ParagraphStyle(
-        "BodyTextCustom",
-        parent=styles["Normal"],
-        fontName="Helvetica",
-        fontSize=9,
-        leading=13,
-        textColor=colors.HexColor("#334155"),
-        spaceAfter=6
+        "BodyTextCustom", parent=styles["Normal"], fontName="Helvetica",
+        fontSize=9, leading=13, textColor=colors.HexColor("#334155"), spaceAfter=6
     )
 
     story = []
 
-    # 1. TOP CENTERED LOGO
     logo_path = os.path.join(os.getcwd(), "frontend", "assets", "madukai_logo.png")
     if not os.path.exists(logo_path):
         logo_path = os.path.join(os.getcwd(), "Maduk-Business-Intelligence", "frontend", "assets", "madukai_logo.png")
@@ -201,20 +207,16 @@ def _generate_pdf_report_bytes(payload: Dict[str, Any]) -> bytes:
         story.append(logo_img)
         story.append(Spacer(1, 10))
 
-    # Document Header Title
     story.append(Paragraph("AI Business Prediction & Executive Report", title_style))
     story.append(Spacer(1, 10))
 
-    # Extract Data Sections
     forecast_results = payload.get("forecast_results", {})
     metrics = payload.get("model_metrics", {})
     executive_summary = payload.get("executive_summary", {})
     insights = payload.get("business_insights", [])
     predictions = payload.get("prediction_results", {}).get("predictions", [])
 
-    # 2. EXECUTIVE DASHBOARD SUMMARY TABLE
     story.append(Paragraph("1. Executive Results Dashboard", section_heading))
-    
     kpi_data = [
         [
             Paragraph("<b>Predicted Revenue:</b>", body_style),
@@ -235,7 +237,6 @@ def _generate_pdf_report_bytes(payload: Dict[str, Any]) -> bytes:
             Paragraph(f"{metrics.get('MAPE', 0.0):.2f}%", body_style)
         ]
     ]
-
     kpi_table = Table(kpi_data, colWidths=[1.5 * inch, 2.0 * inch, 1.5 * inch, 2.0 * inch])
     kpi_table.setStyle(TableStyle([
         ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#f8fafc")),
@@ -246,32 +247,25 @@ def _generate_pdf_report_bytes(payload: Dict[str, Any]) -> bytes:
     story.append(kpi_table)
     story.append(Spacer(1, 12))
 
-    # 3. EXECUTIVE NARRATIVE
     story.append(Paragraph("2. Strategic Executive Narrative", section_heading))
     summary_text = executive_summary.get("summary_narrative", "N/A")
     rationale_text = executive_summary.get("selection_rationale", "N/A")
-    
     story.append(Paragraph(f"<b>Overview:</b> {summary_text}", body_style))
     story.append(Paragraph(f"<b>Model Rationale:</b> {rationale_text}", body_style))
     story.append(Spacer(1, 10))
 
-    # 4. CHARTS SECTION (LINE CHART & BAR CHART)
     story.append(Paragraph("3. Predictive Analytics Visualizations", section_heading))
-    
     line_buf = _generate_line_chart_bytes(predictions)
     bar_buf = _generate_bar_chart_bytes(metrics)
-
     line_img = RLImage(line_buf, width=6.8 * inch, height=2.6 * inch)
     line_img.hAlign = "CENTER"
     story.append(line_img)
     story.append(Spacer(1, 10))
-
     bar_img = RLImage(bar_buf, width=6.8 * inch, height=2.4 * inch)
     bar_img.hAlign = "CENTER"
     story.append(bar_img)
     story.append(Spacer(1, 12))
 
-    # 5. BUSINESS INSIGHTS
     if insights:
         story.append(Paragraph("4. Recommended AI Business Insights", section_heading))
         for insight in insights:
@@ -283,7 +277,7 @@ def _generate_pdf_report_bytes(payload: Dict[str, Any]) -> bytes:
 
 
 # =========================================================
-# 🚀 STANDARD PRODUCTION ENDPOINT (For Streamlit UI)
+# STANDARD PRODUCTION ENDPOINT (For Streamlit UI)
 # =========================================================
 @router.post(
     "/run-pipeline",
@@ -299,27 +293,72 @@ async def run_pipeline_endpoint(
     predict_leads: bool = Form(False),
     predict_customers: bool = Form(False),
     predict_profit: bool = Form(True),
-    date_column: Optional[str] = Form(None),
-    target_column: Optional[str] = Form(None)
+    date_column: Optional[str] = Form("date"),
+    target_column: Optional[str] = Form("revenue")
 ) -> Dict[str, Any]:
-
     try:
         logger.info(f"Received pipeline execution request for file '{file.filename}'.")
 
-        # 1. Read uploaded data file
         contents = await file.read()
         if not contents:
-            return {"success": False, "error": "Uploaded file is empty."}
+            return {"success": False, "error": "Uploaded file is empty.", "error_type": "EmptyUpload"}
 
         df = _extract_dataframe_from_upload(file, contents)
+        logger.info(
+            f"Dataset loaded: rows={len(df)}, columns={len(df.columns)}, "
+            f"columns={list(df.columns)}"
+        )
 
         if df.empty or len(df) < 5:
             return {
                 "success": False,
-                "error": "Dataset contains insufficient rows for cross-validation forecasting (minimum 5 required)."
+                "error": "Dataset contains insufficient rows for cross-validation forecasting (minimum 5 required).",
+                "error_type": "InsufficientData"
             }
 
-        # 2. Determine horizon and dynamic secondary targets
+        # Explicitly resolve the time-series date column.
+        if not date_column:
+            if "date" in df.columns:
+                date_column = "date"
+            else:
+                return {
+                    "success": False,
+                    "error": "No date column was provided and no 'date' column was found in the dataset.",
+                    "error_type": "MissingDateColumn"
+                }
+
+        if date_column not in df.columns:
+            return {
+                "success": False,
+                "error": f"Date column '{date_column}' not found. Available columns: {list(df.columns)}",
+                "error_type": "MissingDateColumn"
+            }
+
+        # Revenue is the default target for the Business Revenue Forecast feature.
+        if not target_column:
+            target_column = "revenue"
+
+        if target_column not in df.columns:
+            return {
+                "success": False,
+                "error": f"Target column '{target_column}' not found. Available columns: {list(df.columns)}",
+                "error_type": "MissingTargetColumn"
+            }
+
+        df[date_column] = pd.to_datetime(df[date_column], errors="coerce")
+        if df[date_column].isna().all():
+            return {
+                "success": False,
+                "error": f"Unable to parse any valid dates from column '{date_column}'.",
+                "error_type": "InvalidDateColumn"
+            }
+
+        invalid_dates = int(df[date_column].isna().sum())
+        if invalid_dates:
+            logger.warning(
+                f"Date column '{date_column}' contains {invalid_dates} invalid date value(s)."
+            )
+
         horizon_steps = _horizon_str_to_int(forecast_horizon)
 
         secondary_targets = []
@@ -328,8 +367,18 @@ async def run_pipeline_endpoint(
         if predict_sales and "sales" in df.columns:
             secondary_targets.append("sales")
 
-        # 3. Call AIPredictionPipeline matching prediction_pipeline.py parameter signature
-        pipeline_output = pipeline.run(
+        logger.info(
+            f"Forecast configuration: horizon={horizon_steps}, target={target_column}, "
+            f"date_column={date_column}, secondary_targets={secondary_targets}, "
+            f"predict_revenue={predict_revenue}, predict_sales={predict_sales}, "
+            f"predict_leads={predict_leads}, predict_customers={predict_customers}, "
+            f"predict_profit={predict_profit}"
+        )
+
+        prediction_pipeline = get_pipeline()
+        logger.info("Starting AIPredictionPipeline.run()...")
+
+        pipeline_output = prediction_pipeline.run(
             data_source=df,
             target_column=target_column,
             date_column=date_column,
@@ -338,7 +387,8 @@ async def run_pipeline_endpoint(
             secondary_targets=secondary_targets if secondary_targets else None
         )
 
-        # 4. Map output to Streamlit UI contract
+        logger.info("AIPredictionPipeline.run() completed successfully.")
+
         kpis = pipeline_output.get("kpi_cards", {})
         forecast_values = pipeline_output.get("forecast_values", [])
         metrics = pipeline_output.get("validation_metrics", {})
@@ -358,9 +408,7 @@ async def run_pipeline_endpoint(
 
         return {
             "success": True,
-            "prediction_results": {
-                "predictions": forecast_values
-            },
+            "prediction_results": {"predictions": forecast_values},
             "forecast_results": {
                 "predicted_revenue": round(predicted_revenue, 2),
                 "forecast_growth_percent": round(forecast_growth, 2),
@@ -385,14 +433,22 @@ async def run_pipeline_endpoint(
 
     except ValueError as ve:
         logger.error(f"Validation error during pipeline run: {str(ve)}")
-        return {"success": False, "error": str(ve)}
+        return {
+            "success": False,
+            "error": str(ve),
+            "error_type": type(ve).__name__
+        }
     except Exception as e:
         logger.exception("Unexpected error during pipeline execution.")
-        return {"success": False, "error": f"Internal Server Error: {str(e)}"}
+        return {
+            "success": False,
+            "error": str(e),
+            "error_type": type(e).__name__
+        }
 
 
 # =========================================================
-# 📄 DEDICATED PDF REPORT GENERATION ENDPOINT
+# DEDICATED PDF REPORT GENERATION ENDPOINT
 # =========================================================
 @router.post(
     "/generate-pdf-report",
@@ -406,21 +462,22 @@ async def generate_pdf_report_endpoint(payload: Dict[str, Any] = Body(...)):
         return Response(
             content=pdf_bytes,
             media_type="application/pdf",
-            headers={
-                "Content-Disposition": "attachment; filename=maduk_ai_prediction_report.pdf"
-            }
+            headers={"Content-Disposition": "attachment; filename=maduk_ai_prediction_report.pdf"}
         )
     except Exception as e:
         logger.exception(f"[PDF GENERATION ERROR] {str(e)}")
         return Response(
-            content=json.dumps({"error": f"Failed to generate PDF: {str(e)}"}),
+            content=json.dumps({
+                "error": f"Failed to generate PDF: {str(e)}",
+                "error_type": type(e).__name__
+            }),
             status_code=500,
             media_type="application/json"
         )
 
 
 # =========================================================
-# 🌊 STREAMING PIPELINE ENDPOINT
+# STREAMING PIPELINE ENDPOINT
 # =========================================================
 @router.post(
     "/run-pipeline-stream",
@@ -432,6 +489,18 @@ async def run_pipeline_stream_endpoint(file: UploadFile = File(...)):
     try:
         file.file.seek(0)
         contents = await file.read()
+
+        if not contents:
+            return StreamingResponse(
+                iter([json.dumps({
+                    "log": "❌ Uploaded file is empty.",
+                    "progress": 100,
+                    "done": True,
+                    "data": {"error_type": "EmptyUpload"}
+                }) + "\n"]),
+                media_type="text/plain"
+            )
+
         df = _extract_dataframe_from_upload(file, contents)
 
         def event_stream():
@@ -457,7 +526,10 @@ async def run_pipeline_stream_endpoint(file: UploadFile = File(...)):
                     "data": {}
                 }) + "\n"
 
-                pipeline_output = pipeline.run(data_source=df)
+                logger.info("Starting streaming AIPredictionPipeline.run()...")
+                prediction_pipeline = get_pipeline()
+                pipeline_output = prediction_pipeline.run(data_source=df)
+                logger.info("Streaming AIPredictionPipeline.run() completed successfully.")
 
                 yield json.dumps({
                     "log": "✅ Prediction Pipeline Completed Successfully!",
@@ -472,13 +544,13 @@ async def run_pipeline_stream_endpoint(file: UploadFile = File(...)):
                     "log": f"❌ Pipeline crashed: {str(e)}",
                     "progress": 100,
                     "done": True,
-                    "data": {}
+                    "data": {
+                        "error": str(e),
+                        "error_type": type(e).__name__
+                    }
                 }) + "\n"
 
-        return StreamingResponse(
-            event_stream(),
-            media_type="text/plain"
-        )
+        return StreamingResponse(event_stream(), media_type="text/plain")
 
     except Exception as e:
         logger.exception(f"[ROUTE STREAM ERROR] {str(e)}")
@@ -487,7 +559,10 @@ async def run_pipeline_stream_endpoint(file: UploadFile = File(...)):
                 "log": f"❌ Request failed: {str(e)}",
                 "progress": 100,
                 "done": True,
-                "data": {}
+                "data": {
+                    "error": str(e),
+                    "error_type": type(e).__name__
+                }
             }) + "\n"]),
             media_type="text/plain"
         )

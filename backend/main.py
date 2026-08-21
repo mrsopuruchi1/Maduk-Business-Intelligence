@@ -1,30 +1,32 @@
 # backend/main.py
 
 import os
-from datetime import datetime
 from typing import Optional
+
 from dotenv import load_dotenv
 
 from fastapi import FastAPI, Depends, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
 from jose import JWTError, jwt
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.database import Base, init_db
+from backend.database import init_db
 from backend.services.auth import get_current_user
+
 from backend.routes import subscription_routes
 from backend.routes import auth_routes
 from backend.routes.flutterwave_webhook import router as flutterwave_webhook_router
-from backend.routes import tenant_routes, dashboard_routes
-from backend.routes import data_intelligence_pipeline_route 
-from backend.routes import ai_prediction_pipeline_route 
-from backend.routes import ai_recommendation_pipeline_route 
+from backend.routes import tenant_routes
+from backend.routes import dashboard_routes
+
+# IMPORTANT:
+# Keep AI pipeline imports isolated in their route modules.
+# Do not import heavy ML/visualization libraries here.
 
 
-
-# ----------------------------
+# --------------------------------------------------
 # ENVIRONMENT VARIABLES
-# ----------------------------
+# --------------------------------------------------
+
 load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -32,28 +34,76 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 REDIS_URL = os.getenv("REDIS_URL")
 
-# ----------------------------
+
+# --------------------------------------------------
 # APP INITIALIZATION
-# ----------------------------
-app = FastAPI(title="Maduk Business Intelligence")
+# --------------------------------------------------
 
-# ----------------------------
+app = FastAPI(
+    title="Maduk Business Intelligence",
+    version="1.0.0"
+)
+
+
+# --------------------------------------------------
 # ROUTES
-# ----------------------------
-app.include_router(auth_routes.router, prefix="/auth")
-app.include_router(subscription_routes.router, tags=["Subscription"])
-app.include_router(flutterwave_webhook_router)
-app.include_router(tenant_routes.router)
-app.include_router(dashboard_routes.router, tags=["Dashboard"])
-app.include_router(data_intelligence_pipeline_route.router)
-app.include_router(ai_prediction_pipeline_route.router)
-app.include_router(ai_recommendation_pipeline_route.router)
+# --------------------------------------------------
+
+app.include_router(
+    auth_routes.router,
+    prefix="/auth"
+)
+
+app.include_router(
+    subscription_routes.router,
+    tags=["Subscription"]
+)
+
+app.include_router(
+    flutterwave_webhook_router
+)
+
+app.include_router(
+    tenant_routes.router
+)
+
+app.include_router(
+    dashboard_routes.router,
+    tags=["Dashboard"]
+)
 
 
-# ----------------------------
+# --------------------------------------------------
+# AI ROUTES
+# --------------------------------------------------
+#
+# These route modules should themselves avoid importing
+# heavy ML libraries until the endpoint is called.
+#
+
+from backend.routes import ai_prediction_pipeline_route
+from backend.routes import data_intelligence_pipeline_route
+from backend.routes import ai_recommendation_pipeline_route
+
+app.include_router(
+    data_intelligence_pipeline_route.router
+)
+
+app.include_router(
+    ai_prediction_pipeline_route.router
+)
+
+app.include_router(
+    ai_recommendation_pipeline_route.router
+)
+
+
+# --------------------------------------------------
 # CORS
-# ----------------------------
+# --------------------------------------------------
+
 FRONTEND_URL = os.getenv("FRONTEND_URL")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[FRONTEND_URL] if FRONTEND_URL else ["*"],
@@ -62,82 +112,110 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ----------------------------
-# DATABASE SETUP
-# ----------------------------
-# Database engine/session are provided by backend.database so the application
-# uses one connection pool and one Base metadata registry.
 
-async def get_db() -> AsyncSession:
-    async with AsyncSessionLocal() as session:
-        yield session
+# --------------------------------------------------
+# REDIS
+# --------------------------------------------------
 
-# ----------------------------
-# REDIS (SAFE MODE)
-# ----------------------------
 redis = None
+
 if REDIS_URL:
     try:
         import redis.asyncio as redis_lib
-        redis = redis_lib.from_url(REDIS_URL, decode_responses=True)
-    except Exception:
+
+        redis = redis_lib.from_url(
+            REDIS_URL,
+            decode_responses=True
+        )
+
+    except Exception as e:
+        print(f"Redis initialization skipped: {e}")
         redis = None
 
-# ----------------------------
-# TENANT AUTH (UPDATED)
-# ----------------------------
+
+# --------------------------------------------------
+# TENANT AUTH
+# --------------------------------------------------
+
 async def get_current_tenant(
     authorization: Optional[str] = Header(None)
 ):
     """
     Extract tenant_id from JWT token.
-    Required for tenant-scoped endpoints like dashboard, billing, subscription.
+
+    Required for tenant-scoped endpoints.
     """
+
     if not authorization:
-        raise HTTPException(status_code=401, detail="Missing Authorization header")
+        raise HTTPException(
+            status_code=401,
+            detail="Missing Authorization header"
+        )
 
     try:
-        token = authorization.split(" ")[1]
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+
+        parts = authorization.split(" ")
+
+        if len(parts) != 2 or parts[0].lower() != "bearer":
+            raise HTTPException(
+                status_code=401,
+                detail="Invalid Authorization header"
+            )
+
+        token = parts[1]
+
+        payload = jwt.decode(
+            token,
+            SECRET_KEY,
+            algorithms=[ALGORITHM]
+        )
 
         tenant_id = payload.get("tenant_id")
 
         if tenant_id is None:
-            raise HTTPException(status_code=401, detail="Tenant not found in token")
+            raise HTTPException(
+                status_code=401,
+                detail="Tenant not found in token"
+            )
 
         return tenant_id
 
     except JWTError:
-        raise HTTPException(status_code=401, detail="Invalid token")
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid token"
+        )
 
-# ----------------------------
-# DASHBOARD (TENANT-AWARE)
-# ----------------------------
+
+# --------------------------------------------------
+# DASHBOARD
+# --------------------------------------------------
+
 @app.get("/dashboard")
 async def dashboard(
     tenant_id: int = Depends(get_current_tenant),
     user_email: str = Depends(get_current_user)
 ):
-    """
-    Tenant-specific dashboard.
-    """
 
     cache_key = f"dashboard:{tenant_id}"
 
-    # Try Redis
     if redis:
+
         try:
+
             cached = await redis.get(cache_key)
+
             if cached:
+
                 return {
                     "tenant_id": tenant_id,
                     "user": user_email,
                     "dashboard": cached
                 }
-        except:
+
+        except Exception:
             pass
 
-    # Simulated tenant-specific data
     data = {
         "tenant_id": tenant_id,
         "total_clients": 120,
@@ -145,11 +223,17 @@ async def dashboard(
         "monthly_revenue": 50000
     }
 
-    # Cache it
     if redis:
+
         try:
-            await redis.set(cache_key, str(data), ex=300)
-        except:
+
+            await redis.set(
+                cache_key,
+                str(data),
+                ex=300
+            )
+
+        except Exception:
             pass
 
     return {
@@ -158,46 +242,64 @@ async def dashboard(
         "dashboard": data
     }
 
-# ----------------------------
-# CLIENT DATA (TENANT-AWARE)
-# ----------------------------
+
+# --------------------------------------------------
+# CLIENT DATA
+# --------------------------------------------------
+
 @app.get("/clients")
 async def clients(
     tenant_id: int = Depends(get_current_tenant),
     user_email: str = Depends(get_current_user)
 ):
+
     return {
         "tenant_id": tenant_id,
         "user": user_email,
         "clients": [
-            {"name": "Client A", "revenue": 5000},
-            {"name": "Client B", "revenue": 8000},
+            {
+                "name": "Client A",
+                "revenue": 5000
+            },
+            {
+                "name": "Client B",
+                "revenue": 8000
+            }
         ]
     }
 
-# ----------------------------
-# REPORTS (TENANT-AWARE)
-# ----------------------------
+
+# --------------------------------------------------
+# REPORTS
+# --------------------------------------------------
+
 @app.get("/reports")
 async def reports(
     tenant_id: int = Depends(get_current_tenant),
     user_email: str = Depends(get_current_user)
 ):
+
     return {
         "tenant_id": tenant_id,
         "user": user_email,
-        "reports": ["Report1.pdf", "Report2.pdf"]
+        "reports": [
+            "Report1.pdf",
+            "Report2.pdf"
+        ]
     }
 
-# ----------------------------
-# AI BUSINESS ADVICE (TENANT-AWARE)
-# ----------------------------
+
+# --------------------------------------------------
+# AI BUSINESS ADVICE
+# --------------------------------------------------
+
 @app.get("/ai-advice")
 async def ai_advice(
     query: str = "",
     tenant_id: int = Depends(get_current_tenant),
     user_email: str = Depends(get_current_user)
 ):
+
     return {
         "tenant_id": tenant_id,
         "user": user_email,
@@ -208,25 +310,62 @@ async def ai_advice(
         ]
     }
 
-# ----------------------------
+
+# --------------------------------------------------
 # HEALTH CHECK
-# ----------------------------
+# --------------------------------------------------
+
 @app.get("/")
 async def root():
-    return {"message": "Maduk Business Intelligence Backend Running"}
+
+    return {
+        "message": "Maduk Business Intelligence Backend Running"
+    }
 
 
 @app.get("/health")
 async def health():
-    return {"status": "ok"}
 
-# ----------------------------
+    return {
+        "status": "ok"
+    }
+
+
+# --------------------------------------------------
 # STARTUP
-# ----------------------------
+# --------------------------------------------------
+
 @app.on_event("startup")
 async def on_startup():
-    await init_db()
+
+    try:
+
+        await init_db()
+
+        print("Database initialization completed.")
+
+    except Exception as e:
+
+        print(f"Database initialization warning: {e}")
+
+        # Do not prevent the API from starting solely because
+        # database initialization encountered an issue.
+
+
+# --------------------------------------------------
+# PAYMENT SUCCESS
+# --------------------------------------------------
 
 @app.get("/payment-success")
-async def payment_success(status: str = None, tx_ref: str = None, transaction_id: int = None):
-    return {"message": "Payment successful", "status": status, "tx_ref": tx_ref, "transaction_id": transaction_id} 
+async def payment_success(
+    status: str = None,
+    tx_ref: str = None,
+    transaction_id: int = None
+):
+
+    return {
+        "message": "Payment successful",
+        "status": status,
+        "tx_ref": tx_ref,
+        "transaction_id": transaction_id
+    }
