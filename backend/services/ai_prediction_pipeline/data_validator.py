@@ -75,12 +75,11 @@ class DataValidator:
         # 1. Standardize column headers FIRST
         # ---------------------------------------------------------
         clean_df.columns = [
-            str(c)
-            .strip()
-            .lower()
-            .replace(" ", "_")
-            .replace("-", "_")
+            str(c).strip().lower().replace(" ", "_").replace("-", "_")
+            for c in clean_df.columns 
         ]
+
+        logger.info(f"Column headers standardized: {list(clean_df.colums)}") 
 
         # Prevent duplicate column names after normalization.
         clean_df = self._make_unique_columns(clean_df)
