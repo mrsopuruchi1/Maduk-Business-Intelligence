@@ -14,7 +14,6 @@ import pandas as pd
 import numpy as np
 
 from .base_model import BaseForecaster
-from .prophet_model import ProphetForecaster
 from .sarima_model import SARIMAForecaster
 from .xgboost_model import XGBoostForecaster
 from .lightgbm_model import LightGBMForecaster
@@ -67,7 +66,6 @@ class ModelSelector:
 
         # Additive & Deep Learning Models
         for model_cls, name in [
-            (ProphetForecaster, "Prophet"),
             (LSTMForecaster, "PyTorch LSTM"),
         ]:
             try:
