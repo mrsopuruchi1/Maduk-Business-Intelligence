@@ -12,10 +12,12 @@ import json
 import logging
 import io
 import os
+import asyncio
 from typing import Dict, Any, Optional, List
 
 from fastapi import APIRouter, UploadFile, File, Form, status, Body
 from fastapi.responses import StreamingResponse, Response
+from starlette.concurrency import run_in_threadpool
 import pandas as pd
 
 from reportlab.lib.pagesizes import letter
@@ -39,6 +41,7 @@ router = APIRouter(
 # Do not initialize the complete AI pipeline during FastAPI startup.
 # This reduces startup cost and helps prevent Render health-check timeouts.
 _pipeline = None
+_forecast_lock = asyncio.Lock()
 
 
 def get_pipeline() -> AIPredictionPipeline:
@@ -375,19 +378,25 @@ async def run_pipeline_endpoint(
             f"predict_profit={predict_profit}"
         )
 
-        prediction_pipeline = get_pipeline()
-        logger.info("Starting AIPredictionPipeline.run()...")
+        # Forecasting is CPU-bound and synchronous. Never execute it directly
+        # inside the FastAPI event loop: doing so can block /health and cause
+        # Render health-check failures while the model selector is running.
+        async with _forecast_lock:
+            logger.info("Initializing pipeline on worker thread...")
+            prediction_pipeline = await run_in_threadpool(get_pipeline)
+            logger.info("Starting AIPredictionPipeline.run() in worker thread...")
 
-        pipeline_output = prediction_pipeline.run(
-            data_source=df,
-            target_column=target_column,
-            date_column=date_column,
-            forecast_horizon=horizon_steps,
-            confidence_level=0.95,
-            secondary_targets=secondary_targets if secondary_targets else None
-        )
+            pipeline_output = await run_in_threadpool(
+                prediction_pipeline.run,
+                data_source=df,
+                target_column=target_column,
+                date_column=date_column,
+                forecast_horizon=horizon_steps,
+                confidence_level=0.95,
+                secondary_targets=secondary_targets if secondary_targets else None,
+            )
 
-        logger.info("AIPredictionPipeline.run() completed successfully.")
+            logger.info("AIPredictionPipeline.run() completed successfully.")
 
         kpis = pipeline_output.get("kpi_cards", {})
         forecast_values = pipeline_output.get("forecast_values", [])

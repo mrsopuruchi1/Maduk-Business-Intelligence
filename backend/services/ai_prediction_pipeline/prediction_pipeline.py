@@ -19,6 +19,7 @@ from .data_validator import DataValidator
 from .time_series_detector import TimeSeriesDetector
 from .feature_engineering import FeatureEngineering
 from .forecasting.model_selector import ModelSelector
+from .forecasting.random_forest_model import RandomForestForecaster
 from .evaluation.metrics import MetricsEvaluator
 from .evaluation.cross_validation import RollingOriginCV
 from .scenario_analysis import ScenarioAnalyzer
@@ -56,7 +57,7 @@ class AIPredictionPipeline:
         min_train_size = max(3, int(self.config.get("min_train_size", 12)))
 
         self.profiler = DataProfiler()
-        self.validator = DataValidator(run_stationarity_tests=False)
+        self.validator = DataValidator()
         self.detector = TimeSeriesDetector()
         self.feature_engine = FeatureEngineering()
         self.metrics_evaluator = MetricsEvaluator()
@@ -690,19 +691,12 @@ class AIPredictionPipeline:
                 freq,
             )
 
-            model_result = self.model_selector.select_best_model(
-                df=sec_featured,
-                date_col=date_col,
-                target_col=target_col,
-                freq=freq,
-                forecast_horizon=horizon,
-            )
-
-            model = model_result.get("winning_model_instance")
-
-            if model is None:
-                return []
-
+            # Auxiliary targets (for example profit) should not trigger a
+            # second full AutoML/model-selection cycle on the low-resource
+            # Render instance. Use the lightweight Random Forest forecaster
+            # for secondary metrics while the primary revenue target still
+            # receives full model selection.
+            model = RandomForestForecaster()
             model.fit(
                 sec_featured,
                 date_col,
