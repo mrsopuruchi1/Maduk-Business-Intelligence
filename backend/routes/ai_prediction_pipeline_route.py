@@ -12,12 +12,10 @@ import json
 import logging
 import io
 import os
-import asyncio
 from typing import Dict, Any, Optional, List
 
 from fastapi import APIRouter, UploadFile, File, Form, status, Body
 from fastapi.responses import StreamingResponse, Response
-from starlette.concurrency import run_in_threadpool
 import pandas as pd
 
 from reportlab.lib.pagesizes import letter
@@ -41,7 +39,6 @@ router = APIRouter(
 # Do not initialize the complete AI pipeline during FastAPI startup.
 # This reduces startup cost and helps prevent Render health-check timeouts.
 _pipeline = None
-_forecast_lock = asyncio.Lock()
 
 
 def get_pipeline() -> AIPredictionPipeline:
@@ -81,6 +78,38 @@ def _extract_dataframe_from_upload(file: UploadFile, contents: bytes) -> pd.Data
         return pd.read_parquet(io.BytesIO(contents))
     else:
         raise ValueError("Unsupported file format. Please upload a .csv, .xlsx, .xls, or .parquet file.")
+
+
+def _resolve_column_case_insensitive(
+    df: pd.DataFrame,
+    requested_column: Optional[str],
+    default_candidates: List[str],
+) -> Optional[str]:
+    """
+    Resolve a DataFrame column without making matching case-sensitive.
+
+    Matching ignores leading/trailing whitespace and letter case, while the
+    actual DataFrame column name is preserved. For example, ``date`` resolves
+    to ``Date`` and ``revenue`` resolves to ``Revenue``.
+    """
+    normalized_columns = {
+        str(column).strip().casefold(): column
+        for column in df.columns
+    }
+
+    if requested_column and str(requested_column).strip():
+        requested_key = str(requested_column).strip().casefold()
+        resolved = normalized_columns.get(requested_key)
+        if resolved is not None:
+            return resolved
+        return None
+
+    for candidate in default_candidates:
+        resolved = normalized_columns.get(str(candidate).strip().casefold())
+        if resolved is not None:
+            return resolved
+
+    return None
 
 
 # =========================================================
@@ -319,34 +348,55 @@ async def run_pipeline_endpoint(
                 "error_type": "InsufficientData"
             }
 
-        # Explicitly resolve the time-series date column.
-        if not date_column:
-            if "date" in df.columns:
-                date_column = "date"
-            else:
-                return {
-                    "success": False,
-                    "error": "No date column was provided and no 'date' column was found in the dataset.",
-                    "error_type": "MissingDateColumn"
-                }
+        # Resolve date/target columns case-insensitively while preserving the
+        # original DataFrame column names. This allows datasets containing
+        # ``Date``/``Revenue`` to work with the frontend defaults ``date``/
+        # ``revenue``.
+        requested_date_column = date_column
+        resolved_date_column = _resolve_column_case_insensitive(
+            df,
+            requested_date_column,
+            ["date", "datetime", "timestamp", "transaction_date"]
+        )
 
-        if date_column not in df.columns:
+        if resolved_date_column is None:
+            requested_label = requested_date_column or "date"
             return {
                 "success": False,
-                "error": f"Date column '{date_column}' not found. Available columns: {list(df.columns)}",
+                "error": (
+                    f"Date column '{requested_label}' not found (case-insensitive match). "
+                    f"Available columns: {list(df.columns)}"
+                ),
                 "error_type": "MissingDateColumn"
             }
 
-        # Revenue is the default target for the Business Revenue Forecast feature.
-        if not target_column:
-            target_column = "revenue"
+        date_column = resolved_date_column
 
-        if target_column not in df.columns:
+        # Revenue is the default target for the Business Revenue Forecast feature.
+        requested_target_column = target_column or "revenue"
+        resolved_target_column = _resolve_column_case_insensitive(
+            df,
+            requested_target_column,
+            ["revenue"]
+        )
+
+        if resolved_target_column is None:
             return {
                 "success": False,
-                "error": f"Target column '{target_column}' not found. Available columns: {list(df.columns)}",
+                "error": (
+                    f"Target column '{requested_target_column}' not found (case-insensitive match). "
+                    f"Available columns: {list(df.columns)}"
+                ),
                 "error_type": "MissingTargetColumn"
             }
+
+        target_column = resolved_target_column
+
+        logger.info(
+            "Resolved forecasting columns case-insensitively: date_column='%s', target_column='%s'",
+            date_column,
+            target_column,
+        )
 
         df[date_column] = pd.to_datetime(df[date_column], errors="coerce")
         if df[date_column].isna().all():
@@ -378,25 +428,19 @@ async def run_pipeline_endpoint(
             f"predict_profit={predict_profit}"
         )
 
-        # Forecasting is CPU-bound and synchronous. Never execute it directly
-        # inside the FastAPI event loop: doing so can block /health and cause
-        # Render health-check failures while the model selector is running.
-        async with _forecast_lock:
-            logger.info("Initializing pipeline on worker thread...")
-            prediction_pipeline = await run_in_threadpool(get_pipeline)
-            logger.info("Starting AIPredictionPipeline.run() in worker thread...")
+        prediction_pipeline = get_pipeline()
+        logger.info("Starting AIPredictionPipeline.run()...")
 
-            pipeline_output = await run_in_threadpool(
-                prediction_pipeline.run,
-                data_source=df,
-                target_column=target_column,
-                date_column=date_column,
-                forecast_horizon=horizon_steps,
-                confidence_level=0.95,
-                secondary_targets=secondary_targets if secondary_targets else None,
-            )
+        pipeline_output = prediction_pipeline.run(
+            data_source=df,
+            target_column=target_column,
+            date_column=date_column,
+            forecast_horizon=horizon_steps,
+            confidence_level=0.95,
+            secondary_targets=secondary_targets if secondary_targets else None
+        )
 
-            logger.info("AIPredictionPipeline.run() completed successfully.")
+        logger.info("AIPredictionPipeline.run() completed successfully.")
 
         kpis = pipeline_output.get("kpi_cards", {})
         forecast_values = pipeline_output.get("forecast_values", [])
